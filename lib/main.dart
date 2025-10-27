@@ -1,122 +1,121 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp()); // Application entry point
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: ThemeData(primarySwatch: Colors.green),
+      darkTheme: ThemeData(primarySwatch: Colors.amber),
+      //color: Color.blue,
+      debugShowCheckedModeBanner: false,
+      home: HomeActivity(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomeActivity extends StatelessWidget {
+  const HomeActivity({super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  MySnackBar(message, context){
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message))
+    );
   }
+
+  MyAlertDialog(context){
+    return showDialog(context: context,
+        builder: (BuildContext context){
+          return Expanded(
+              child: AlertDialog(
+                title: Text("Alert !"),
+                content: Text("Are you sure you want to exit?"),
+                actions: [
+                  TextButton(onPressed: (){
+                    MySnackBar("Delelted Successfully", context);
+                    Navigator.of(context).pop();
+                  }, child: Text("Yes")),
+
+                  TextButton(onPressed: (){Navigator.of(context).pop();}, child: Text("No")),
+                  ]
+              ),
+          );
+        }
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
+    ButtonStyle buttonStyle=ElevatedButton.styleFrom(
+      padding: EdgeInsets.all(25),
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.white,
+      textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)
+      ),
+    );
+
+    ButtonStyle subButtonStyle=OutlinedButton.styleFrom(
+      minimumSize: Size(double.infinity, 60),
+    );
+
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        backgroundColor: Colors.black12,
+        title: Text("ROBOTICS WITH RAJIB", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      /*
+      body: Container(
+        height: 250,
+        width: 250,
+        alignment: Alignment.topCenter,
+        //margin: EdgeInsets.fromLTRB(60, 90, 10, 40),
+        margin: EdgeInsets.all(30),
+        //padding: EdgeInsets.fromLTRB(30, 30, 50, 50),
+        padding: EdgeInsets.all(60),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          border: Border.all(color: Colors.black, width: 6),
         ),
+        child: Image.network(""),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      */
+      /*
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton(onPressed: (){MySnackBar("I am text button", context);}, child: Text("Text Button")),
+          ElevatedButton(onPressed: (){MySnackBar("I am Elevated Button", context);}, child: Text("ElevatedButton"), style: buttonStyle),
+          OutlinedButton(onPressed: (){MySnackBar("I am Outline Button", context);}, child: Text("OutlinedButton")),
+        ],
+      ),
+      */
+        /****************************** Alert Dialog **************************************************
+         * when click
+         */
+        /*
+      body: Center(
+        child: ElevatedButton(child: Text("Click me"), onPressed: (){MyAlertDialog(context);},)
+      )
+         */
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'First Name')),),
+          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Last Name')),),
+          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Email')),),
+          Padding(padding: EdgeInsets.all(10), child: ElevatedButton(onPressed: (){}, child: Text("Submit"), style: subButtonStyle,),)
+        ],
+      ),
     );
   }
 }
