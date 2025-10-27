@@ -23,9 +23,9 @@ class HomeActivity extends StatelessWidget {
   //const HomeActivity({super.key});
 
   var MyItems = [
-    {"img" : "https://ichibot.id/storage/products/1760494160_68ef025058ab6.png", "name" : "rajib"},
-    {"img" : "https://ichibot.id/storage/products/1760494160_68ef025058ab6.png", "name" : "Ichiduino Pro"},
-    {"img" : "https://ichibot.id/storage/products/1760491960_68eef9b8a7a9f.png", "name" : "Ultimate 5 Max"}
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2025/01/Kangaroo-Pro-frontal-image-PAL-Robotics-legged-humanoid-scaled-e1760631086520-703x1024.png", "name" : "KANGAROO"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2025/01/TIAGoPro_Sided1_Mobile-Manipulator_PAL-Robotics-921x1024.webp", "name" : "TIAGo Pro"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/REE-C-Robot-3-918x1024.webp", "name" : "Ultimate 5 Max", "Name" : "REEM-C"}
   ];
 
   MySnackBar(message, context){
@@ -82,14 +82,15 @@ class HomeActivity extends StatelessWidget {
       ),
       body: ListView.builder(
         itemCount: MyItems.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (context, i) {
           return GestureDetector(
-            onTap: () {},
+            onTap: () {MySnackBar(MyItems[i]["name"]!, context);},
             child: Container(
               margin: EdgeInsets.all(10),
               width: double.infinity,
-              //child: Image.network(MyItems[0]["img"]!, fit: BoxFit.cover)
-              child: Image.network("https://ichibot.id/storage/products/1760494160_68ef025058ab6.png"),
+              //height: 1000,
+              child: Image.network(MyItems[i]["img"]!, fit: BoxFit.cover)
+              //child: Image.network("https://pal-robotics.com/wp-content/uploads/2025/01/Kangaroo-Pro-frontal-image-PAL-Robotics-legged-humanoid-scaled-e1760631086520-703x1024.png"),
             ),
           );
         },
