@@ -113,7 +113,9 @@ class HomeActivity extends StatelessWidget {
           Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'First Name')),),
           Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Last Name')),),
           Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Email')),),
-          Padding(padding: EdgeInsets.all(10), child: ElevatedButton(onPressed: (){}, child: Text("Submit"), style: subButtonStyle,),)
+          Padding(padding: EdgeInsets.all(10), child: ElevatedButton(onPressed: (){}, child: Text("Submit"), style: subButtonStyle,),),
+          Image.network("https://www.zxcompo.com/products-item/inductor-coil/"),
+
         ],
       ),
     );
