@@ -23,9 +23,16 @@ class HomeActivity extends StatelessWidget {
   //const HomeActivity({super.key});
 
   var MyItems = [
-    {"img" : "https://pal-robotics.com/wp-content/uploads/2025/01/Kangaroo-Pro-frontal-image-PAL-Robotics-legged-humanoid-scaled-e1760631086520-703x1024.png", "name" : "KANGAROO"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/TALOS-Robot-918x1024.webp", "name" : "KANGAROO"},
     {"img" : "https://pal-robotics.com/wp-content/uploads/2025/01/TIAGoPro_Sided1_Mobile-Manipulator_PAL-Robotics-921x1024.webp", "name" : "TIAGo Pro"},
-    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/REE-C-Robot-3-918x1024.webp", "name" : "Ultimate 5 Max", "Name" : "REEM-C"}
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/REE-C-Robot-3-918x1024.webp", "name" : "Ultimate 5 Max", "Name" : "REEM-C"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/TALOS-Robot-918x1024.webp", "name" : "KANGAROO"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2025/01/TIAGoPro_Sided1_Mobile-Manipulator_PAL-Robotics-921x1024.webp", "name" : "TIAGo Pro"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/REE-C-Robot-3-918x1024.webp", "name" : "Ultimate 5 Max", "Name" : "REEM-C"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/TALOS-Robot-918x1024.webp", "name" : "KANGAROO"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2025/01/TIAGoPro_Sided1_Mobile-Manipulator_PAL-Robotics-921x1024.webp", "name" : "TIAGo Pro"},
+    {"img" : "https://pal-robotics.com/wp-content/uploads/2024/04/REE-C-Robot-3-918x1024.webp", "name" : "Ultimate 5 Max", "Name" : "REEM-C"},
+
   ];
 
   MySnackBar(message, context){
@@ -80,13 +87,18 @@ class HomeActivity extends StatelessWidget {
         backgroundColor: Colors.black12,
         title: Text("ROBOTICS", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
       ),
-      body: ListView.builder(
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          crossAxisSpacing: 10,
+          childAspectRatio: 0.5,
+        ),
         itemCount: MyItems.length,
         itemBuilder: (context, i) {
           return GestureDetector(
             onTap: () {MySnackBar(MyItems[i]["name"]!, context);},
             child: Container(
-              margin: EdgeInsets.all(10),
+              margin: EdgeInsets.all(0),
               width: double.infinity,
               //height: 1000,
               child: Image.network(MyItems[i]["img"]!, fit: BoxFit.cover)
