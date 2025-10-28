@@ -42,17 +42,21 @@ class HomeActivity extends StatelessWidget {
         appBar: AppBar(
           title: Text('Home'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Activity1("This is from home to activity-1")));
-            }, child: Text("Go Activity-1")),
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Activity2("This is from home to activity-2")));
-            }, child: Text("Go Activity-2")),
-          ],
-        )
+        body: Center(
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            shadowColor: Color.fromRGBO(33, 191, 115, 1),
+            color: Color.fromRGBO(33, 191, 115, 1),
+            elevation: 10,
+            child: SizedBox(
+              height: 200,
+              width: 200,
+              child: Center(child: Text('Home Activity')),
+            ),
+          ),
+        ),
     );
   }
 }
