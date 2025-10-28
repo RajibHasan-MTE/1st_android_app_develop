@@ -43,20 +43,11 @@ class HomeActivity extends StatelessWidget {
           title: Text('Home'),
         ),
         body: Center(
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            shadowColor: Color.fromRGBO(33, 191, 115, 1),
-            color: Color.fromRGBO(33, 191, 115, 1),
-            elevation: 10,
-            child: SizedBox(
-              height: 200,
-              width: 200,
-              child: Center(child: Text('Home Activity')),
-            ),
-          ),
-        ),
+          child: CircularProgressIndicator(
+            color: Colors.black12,
+            strokeWidth: 5,
+          )
+        )
     );
   }
 }
