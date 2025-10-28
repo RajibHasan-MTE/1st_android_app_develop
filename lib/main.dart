@@ -46,10 +46,10 @@ class HomeActivity extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Activity1()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Activity1("This is from home to activity-1")));
             }, child: Text("Go Activity-1")),
             ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Activity2()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Activity2("This is from home to activity-2")));
             }, child: Text("Go Activity-2")),
           ],
         )
@@ -59,7 +59,14 @@ class HomeActivity extends StatelessWidget {
 
 
 class Activity1 extends StatelessWidget {
-  //const HomeActivity({super.key});
+  String msg;
+
+  Activity1(
+      this.msg,
+      {super.key}
+  );
+
+
 
 
   @override
@@ -67,11 +74,11 @@ class Activity1 extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Activity-1'),
+        title: Text(msg),
       ),
       body: Center(
         child: ElevatedButton(onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Activity2()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Activity2("This is from home to activity-2")));
         }, child: Text("Go Activity-2"),),
       ),
     );
@@ -80,7 +87,12 @@ class Activity1 extends StatelessWidget {
 
 
 class Activity2 extends StatelessWidget {
-  const Activity2({super.key});
+  String msg;
+
+  Activity2(
+      this.msg,
+      {super.key}
+      );
 
 
   @override
@@ -88,11 +100,11 @@ class Activity2 extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Activity-2'),
+        title: Text(msg),
       ),
       body: Center(
         child: ElevatedButton(onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Activity1()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Activity1("This is from home to activity-1")));
         }, child: Text("Go Activity-1"),),
       ),
     );
