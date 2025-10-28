@@ -43,9 +43,10 @@ class HomeActivity extends StatelessWidget {
           title: Text('Home'),
         ),
         body: Center(
-          child: LinearProgressIndicator(
-            color: Colors. black,
-            backgroundColor: Colors.grey,
+          child: Icon(
+            Icons.camera_alt,
+            size: 100,
+            color: Colors.black12,
           ),
         )
     );
