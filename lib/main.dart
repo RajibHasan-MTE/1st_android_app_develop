@@ -50,7 +50,7 @@ class HomeActivity extends StatelessWidget {
                 content: Text("Are you sure you want to exit?"),
                 actions: [
                   TextButton(onPressed: (){
-                    MySnackBar("Delelted Successfully", context);
+                    MySnackBar("Deleted Successfully", context);
                     Navigator.of(context).pop();
                   }, child: Text("Yes")),
 
