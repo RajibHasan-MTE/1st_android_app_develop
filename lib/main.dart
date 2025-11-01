@@ -36,8 +36,8 @@ class HomeActivity extends StatelessWidget {
           title: Text('Rajib Hasan'),
         ),
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
+          scrollDirection: Axis.horizontal,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(height: 200, width: 200, color: Colors.black),
