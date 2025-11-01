@@ -40,6 +40,12 @@ class HomeActivity extends StatelessWidget {
             height: 300,
             color: Colors.red,
             alignment: Alignment.center,
+          child: AspectRatio(
+              aspectRatio: 16/9,
+            child: Container(
+              color: Colors.green,
+            ),
+          ),
         )
     );
   }
