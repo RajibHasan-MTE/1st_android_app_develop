@@ -35,16 +35,24 @@ class HomeActivity extends StatelessWidget {
         appBar: AppBar(
           title: Text('Rajib Hasan'),
         ),
-        body: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints){
-              if(constraints.maxWidth > 600){
-                return Container(height: 400, width: 400, color: Colors.green);
-              }
-              else{
-                return Container(height: 200, width: 200, color: Colors.red);
-              }
-            }
-        ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(height: 200, width: 200, color: Colors.black),
+              Container(height: 200, width: 200, color: Colors.red),
+              Container(height: 200, width: 200, color: Colors.green),
+              Container(height: 200, width: 200, color: Colors.orange),
+              Container(height: 200, width: 200, color: Colors.black),
+              Container(height: 200, width: 200, color: Colors.black),
+              Container(height: 200, width: 200, color: Colors.red),
+              Container(height: 200, width: 200, color: Colors.green),
+              Container(height: 200, width: 200, color: Colors.orange),
+              Container(height: 200, width: 200, color: Colors.black)
+            ],
+          )
+        )
     );
   }
 }
