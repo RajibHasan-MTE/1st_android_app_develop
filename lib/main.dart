@@ -35,15 +35,16 @@ class HomeActivity extends StatelessWidget {
         appBar: AppBar(
           title: Text('Rajib Hasan'),
         ),
-        body: Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.5,
-            heightFactor: 0.3,
-            child: Container(
-              color: Colors.green,
-            ),
-          ),
-        )
+        body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints){
+              if(constraints.maxWidth > 600){
+                return Container(height: 400, width: 400, color: Colors.green);
+              }
+              else{
+                return Container(height: 200, width: 200, color: Colors.red);
+              }
+            }
+        ),
     );
   }
 }
