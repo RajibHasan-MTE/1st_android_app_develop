@@ -33,15 +33,12 @@ class HomeActivity extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Home'),
+          title: Text('Rajib Hasan'),
         ),
-        body: Container(
-            width: double.infinity,
-            height: 300,
-            color: Colors.red,
-            alignment: Alignment.center,
-          child: AspectRatio(
-              aspectRatio: 16/9,
+        body: Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            heightFactor: 0.3,
             child: Container(
               color: Colors.green,
             ),
