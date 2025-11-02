@@ -45,7 +45,6 @@ class HomeActivity extends StatelessWidget {
               Container(height: 200, width: 200, color: Colors.green),
               Container(height: 200, width: 200, color: Colors.orange),
               Container(height: 200, width: 200, color: Colors.black),
-              Container(height: 200, width: 200, color: Colors.black),
               Container(height: 200, width: 200, color: Colors.red),
               Container(height: 200, width: 200, color: Colors.green),
               Container(height: 200, width: 200, color: Colors.orange),
