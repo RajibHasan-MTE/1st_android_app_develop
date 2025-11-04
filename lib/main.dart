@@ -30,35 +30,19 @@ class HomeActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+  var width = MediaQuery.of(context).size.width;
+  var height = MediaQuery.of(context).size.height;
+  var orientation  = MediaQuery.of(context).orientation;
     return Scaffold(
         appBar: AppBar(
           title: Text('Rajib Hasan'),
         ),
-        body: Row(
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 20,
-              child: Container(color: Colors.green)
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 30,
-              child: Container(color: Colors.black,)
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 20,
-              child: Container(color: Colors.yellow)
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 30,
-              child: Container(color: Colors.orange,)
-            ),
+            Text('Screen Width = ${width}'),
+            Text('Screen Height = ${height}'),
+            Text('screen Orintentation = ${orientation}')
           ],
         )
     );
