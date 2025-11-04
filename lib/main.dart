@@ -35,7 +35,7 @@ class HomeActivity extends StatelessWidget {
         appBar: AppBar(
           title: Text('Rajib Hasan'),
         ),
-        body: Column(
+        body: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
 
