@@ -39,19 +39,23 @@ class HomeActivity extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
 
-            Expanded(
+            Flexible(
+              fit: FlexFit.tight,
               flex: 20,
               child: Container(color: Colors.green)
             ),
-            Expanded(
+            Flexible(
+              fit: FlexFit.tight,
               flex: 30,
               child: Container(color: Colors.black,)
             ),
-            Expanded(
+            Flexible(
+              fit: FlexFit.tight,
               flex: 20,
               child: Container(color: Colors.yellow)
             ),
-            Expanded(
+            Flexible(
+              fit: FlexFit.tight,
               flex: 30,
               child: Container(color: Colors.orange,)
             ),
