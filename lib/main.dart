@@ -37,11 +37,48 @@ class HomeActivity extends StatelessWidget {
         appBar: AppBar(
           title: Text('Rajib Hasan'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Hello Rajib Hasan', style: HeadLine(context),)
-          ],
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ResponsiveGridRow(
+            children: [
+              ResponsiveGridCol(
+                lg: 12,
+                child: Container(
+                  height: 100,
+                  color: Colors.orange,
+                ),
+              ),
+              ResponsiveGridCol(
+                xl: 3, lg: 3, md: 3, sm: 12, xs: 12,
+                child: Container(
+                  height: 100,
+                  color: Colors.green,
+                ),
+              ),
+              ResponsiveGridCol(
+                xl: 3, lg: 3, md: 3, sm: 12, xs: 12,
+                child: Container(
+                  height: 100,
+                  color: Colors.red,
+                ),
+              ),
+              ResponsiveGridCol(
+                xl: 3, lg: 3, md: 3, sm: 12, xs: 12,
+                child: Container(
+                  height: 100,
+                  color: Colors.black,
+                ),
+              ),
+              ResponsiveGridCol(
+                xl: 3, lg: 3, md: 3, sm: 12, xs: 12,
+                child: Container(
+                  height: 100,
+                  color: Colors.yellow,
+                ),
+              ),
+
+            ],
+          ),
         )
     );
   }
