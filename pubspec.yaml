@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   responsive_grid: ^2.4.4
   flutter_bootstrap: ^2.0.0
-  telephony: ^0.2.0
+
   url_launcher: ^6.3.2
   flutter_secure_storage: ^9.2.4
   shared_preferences: ^2.5.3
