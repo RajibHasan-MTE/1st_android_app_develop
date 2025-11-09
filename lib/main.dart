@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Counter app',
+      title: 'Sum app',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -24,7 +24,6 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState(){
-    //print("CreateState called");
     return MyHomePageUI();
   }
 
@@ -36,19 +35,27 @@ class MyHomePageUI extends State<MyHomePage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Counter App"),),
-      body: Center(
-        child: Text(countNumber.toString()),
+      appBar: AppBar(
+        title: Text('Sum app'),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: (){
-            setState(() {
-              countNumber += 1;
-            });
-            print(countNumber);
-          }
-      ),
+      body: Padding(
+        padding: EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text("Sum = 0"),
+            TextFormField(),
+            TextFormField(),
+            Container(child: ElevatedButton(
+              child: Text("Add"),
+              onPressed: (){
+                
+              }
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 
