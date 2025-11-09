@@ -33,18 +33,22 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageUI extends State<MyHomePage>{
   Map<String, double> FormValue = { "Num1" : 0, "Num2" : 0, "Num3" : 0};
+  double SUM = 0;
   int countNumber = 0;
   @override
   Widget build(BuildContext context) {
 
     MyInputOnChange(InputKey, InputValue){
       setState(() {
-        FormValue.update(InputKey, (value) => InputValue);
+        FormValue.update(InputKey, (value) => double.parse(InputValue));
       });
 
     }
 
     AddAllNumber(){
+      setState(() {
+        SUM = FormValue['Num1']! + FormValue['Num2']! + FormValue['Num3']!;
+      });
 
     }
 
@@ -58,7 +62,7 @@ class MyHomePageUI extends State<MyHomePage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text("Sum = 0", style: HeadTexStyle(),),
+            Text(SUM.toString(), style: HeadTexStyle(),),
             SizedBox(height: 20,),
             TextFormField(
               onChanged: (value){
