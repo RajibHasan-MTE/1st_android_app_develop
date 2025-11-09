@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 
 class MyHomePageUI extends State<MyHomePage>{
-  Map<String, String> FormValue = { "Num1" : "", "Num2" : "", "Num3" : ""};
+  Map<String, double> FormValue = { "Num1" : 0, "Num2" : 0, "Num3" : 0};
   int countNumber = 0;
   @override
   Widget build(BuildContext context) {
@@ -41,6 +41,10 @@ class MyHomePageUI extends State<MyHomePage>{
       setState(() {
         FormValue.update(InputKey, (value) => InputValue);
       });
+
+    }
+
+    AddAllNumber(){
 
     }
 
@@ -80,7 +84,7 @@ class MyHomePageUI extends State<MyHomePage>{
               style: AppButtonStyle(),
               child: Text("Add"),
               onPressed: (){
-
+                  AddAllNumber();
               }
               ),
             ),
