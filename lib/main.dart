@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Style.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,13 +44,20 @@ class MyHomePageUI extends State<MyHomePage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text("Sum = 0"),
-            TextFormField(),
-            TextFormField(),
-            Container(child: ElevatedButton(
+            Text("Sum = 0", style: HeadTexStyle(),),
+            SizedBox(height: 20,),
+            TextFormField(decoration: AppInputStyle("First number"),),
+            SizedBox(height: 20),
+            TextFormField(decoration: AppInputStyle("Second number"),),
+            SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+              style: AppButtonStyle(),
               child: Text("Add"),
               onPressed: (){
-                
+
               }
               ),
             ),
