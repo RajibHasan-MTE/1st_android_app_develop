@@ -1,3 +1,4 @@
+import 'package:app1/Style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,8 +28,8 @@ class ToDoPageView extends State<ToDoPage>{
               flex: 10,
               child: Row(
                 children: [
-                  Expanded(child: TextFormField()),
-                  Expanded(child: ElevatedButton(onPressed: (){}, child: Text('Add'))),
+                  Expanded(flex: 70,child: TextFormField(decoration: AppInputDecoration("List Item"))),
+                  Expanded(flex: 30, child: Padding(padding: EdgeInsets.only(left: 5), child: ElevatedButton(onPressed: (){}, child: Text('Add'), style: AppButtonStyle()),)),
                 ],
               )
             ),
@@ -38,7 +39,14 @@ class ToDoPageView extends State<ToDoPage>{
                     itemCount: ToDoList.length,
                     itemBuilder: (context, index) {
                       return Card(
-                        child: Text("List"),
+                        child: SizeBox50(
+                          Row(
+                            children: [
+                              Expanded(flex: 70,child: Text("Item")),
+                              Expanded(flex: 30, child: TextButton(onPressed: (){}, child: Icon(Icons.delete))),
+                            ],
+                          )
+                        ),
                       );
                     }
               ),
