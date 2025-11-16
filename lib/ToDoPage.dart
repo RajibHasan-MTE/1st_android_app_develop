@@ -15,7 +15,7 @@ class ToDoPageView extends State<ToDoPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("ToDo"),),
+      appBar: AppBar(title: Text("To Do"),),
     );
   }
 
