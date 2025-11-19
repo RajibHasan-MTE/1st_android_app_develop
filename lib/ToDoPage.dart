@@ -14,7 +14,19 @@ class ToDoPage extends StatefulWidget{
 
 class ToDoPageView extends State<ToDoPage>{
 
-  List ToDoList = [{"1" : "1"}, {"2" : "2"}, {"3" : "3"}];
+  List ToDoList = [];
+  String item = "";
+  MyInputOnChange(content){
+
+    setState(() {
+      item = content;
+    });
+  }
+  AddItem(){
+    setState((){
+      ToDoList.add({"item": item});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +40,8 @@ class ToDoPageView extends State<ToDoPage>{
               flex: 10,
               child: Row(
                 children: [
-                  Expanded(flex: 70,child: TextFormField(decoration: AppInputDecoration("List Item"))),
-                  Expanded(flex: 30, child: Padding(padding: EdgeInsets.only(left: 5), child: ElevatedButton(onPressed: (){}, child: Text('Add'), style: AppButtonStyle()),)),
+                  Expanded(flex: 70,child: TextFormField(onChanged: (content){MyInputOnChange(content);},decoration: AppInputDecoration("List Item"))),
+                  Expanded(flex: 30, child: Padding(padding: EdgeInsets.only(left: 5), child: ElevatedButton(onPressed: (){AddItem();}, child: Text('Add'), style: AppButtonStyle()),)),
                 ],
               )
             ),
@@ -42,7 +54,7 @@ class ToDoPageView extends State<ToDoPage>{
                         child: SizeBox50(
                           Row(
                             children: [
-                              Expanded(flex: 70,child: Text("Item")),
+                              Expanded(flex: 70,child: Text(ToDoList[index]["item"])),
                               Expanded(flex: 30, child: TextButton(onPressed: (){}, child: Icon(Icons.delete))),
                             ],
                           )
