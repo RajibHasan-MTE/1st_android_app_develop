@@ -27,6 +27,11 @@ class ToDoPageView extends State<ToDoPage>{
       ToDoList.add({"item": item});
     });
   }
+  removeItem(index){
+    setState(() {
+      ToDoList.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +60,7 @@ class ToDoPageView extends State<ToDoPage>{
                           Row(
                             children: [
                               Expanded(flex: 70,child: Text(ToDoList[index]["item"])),
-                              Expanded(flex: 30, child: TextButton(onPressed: (){}, child: Icon(Icons.delete))),
+                              Expanded(flex: 30, child: TextButton(onPressed: (){removeItem(index);}, child: Icon(Icons.delete))),
                             ],
                           )
                         ),
