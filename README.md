@@ -1,4 +1,4 @@
-# app1
+# product_list
 
 A new Flutter project.
 
