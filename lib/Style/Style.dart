@@ -26,6 +26,9 @@ ScreenBackground(context){
 }
 
 
+
+
+
 InputDecoration AppInputDecoration(label){
   return InputDecoration(
     focusedBorder: const OutlineInputBorder(
@@ -41,4 +44,19 @@ InputDecoration AppInputDecoration(label){
       labelText: label
   );
 
+}
+
+
+
+DecoratedBox AppDropDownStyle(child){
+  return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorWhite, border: Border.all(color: colorWhite, width: 1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+    child: Padding(
+        padding: EdgeInsets.only(left: 30, right: 30),
+      child: child,
+    ),
+  );
 }
