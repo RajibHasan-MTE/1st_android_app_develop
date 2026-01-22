@@ -1,4 +1,4 @@
-# product_list
+# basics_counter_app
 
 A new Flutter project.
 

@@ -43,3 +43,80 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# --------------------
+# Flutter / Dart
+# --------------------
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+.metadata
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# --------------------
+# Android
+# --------------------
+android/.gradle/
+android/local.properties
+android/key.properties
+android/**/key.jks
+android/**/keystore.jks
+android/**/keystore.properties
+android/**/upload-keystore.jks
+
+# Build outputs
+android/app/build/
+android/build/
+
+# Gradle
+.gradle/
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar
+
+# --------------------
+# iOS / macOS (optional)
+# --------------------
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Runner.xcworkspace/
+ios/Runner/GeneratedPluginRegistrant.*
+
+macos/Pods/
+macos/Flutter/ephemeral/
+
+# --------------------
+# Web
+# --------------------
+build/web/
+
+# --------------------
+# Linux / Windows
+# --------------------
+linux/flutter/ephemeral/
+windows/flutter/ephemeral/
+
+# --------------------
+# Logs & temp
+# --------------------
+*.log
+*.tmp
+*.swp
+*.lock
+
+# --------------------
+# Environment files
+# --------------------
+.env
+.env.*

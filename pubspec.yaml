@@ -1,4 +1,4 @@
-name: product_list
+name: basics_counter_app
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.3
+  sdk: ^3.10.7
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -30,21 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  responsive_grid: ^2.4.4
-  flutter_bootstrap: ^2.0.0
 
-  url_launcher: ^6.3.2
-  flutter_secure_storage: ^9.2.4
-  shared_preferences: ^2.5.3
-  android_alarm_manager_plus: ^5.0.0
-  provider: ^6.1.5+1
-  flutter_lints: ^6.0.0
-  http: ^1.6.0
-  flutter_svg: ^2.2.3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-
 
 dev_dependencies:
   flutter_test:
@@ -57,7 +46,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -68,8 +56,6 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  assets:
-    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

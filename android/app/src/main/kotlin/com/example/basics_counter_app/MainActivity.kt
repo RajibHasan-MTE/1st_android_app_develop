@@ -1,4 +1,4 @@
-package com.example.product_list
+package com.example.basics_counter_app
 
 import io.flutter.embedding.android.FlutterActivity
 
