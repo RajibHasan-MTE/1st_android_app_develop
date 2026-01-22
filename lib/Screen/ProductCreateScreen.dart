@@ -54,12 +54,12 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
 
                   AppDropDownStyle(
                       DropdownButton(
-                        value: "2 pcs",
+                        value: "1 pcs",
                           items: [
                             DropdownMenuItem(child: Text("Select Qt"),value: '',),
                             DropdownMenuItem(child: Text("1 pcs"),value: '1 pcs',),
                             DropdownMenuItem(child: Text("2 pcs"),value: '2 pcs',),
-                            DropdownMenuItem(child: Text("3 pcs"),value: '3 pcs',),
+                            DropdownMenuItem(child: Text( "3 pcs"),value: '3 pcs',),
                             DropdownMenuItem(child: Text("4 pcs"),value: '4 pcs',),
 
                           ],
