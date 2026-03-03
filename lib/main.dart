@@ -71,7 +71,7 @@ class HomeActivity extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black12,
-        title: Text("ROBOTICS WITH RAJIB", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
+        title: Text("পাড়াতলী একতা ফাউন্ডেশন", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
       ),
       /*
       body: Container(
@@ -110,11 +110,11 @@ class HomeActivity extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'First Name')),),
-          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Last Name')),),
-          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Email')),),
+          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Name')),),
+          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Amount')),),
+          Padding(padding: EdgeInsets.all(10), child: TextField(decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Code')),),
           Padding(padding: EdgeInsets.all(10), child: ElevatedButton(onPressed: (){}, child: Text("Submit"), style: subButtonStyle,),),
-          Image.network("https://www.zxcompo.com/products-item/inductor-coil/"),
+          Image.network("https://scontent.fdac207-1.fna.fbcdn.net/v/t39.30808-6/641384200_122093283921258830_3041840157541520309_n.png?stp=dst-png_s960x960&_nc_cat=100&ccb=1-7&_nc_sid=2a1932&_nc_eui2=AeEiR919FEqeer4BuRx2wAQumMME2muy5aWYwwTaa7LlpdFjdIJjxCiUxyh5YCD6CQpb4N5f4we3VMPCQ6QQbkUe&_nc_ohc=PsQa4NbmruAQ7kNvwGaTVs5&_nc_oc=Adl33z73K1mPNy7axNiNN4zglyI3j0UOeUiJLwB3YugIYCz9LFqGskh4_cbnhPvrLUs&_nc_zt=23&_nc_ht=scontent.fdac207-1.fna&_nc_gid=GVYYl2syxsi8WSEmIJzAzw&_nc_ss=8&oh=00_Afwrhi1JUhoRvt4DIEc3UbtiEfMg8ha6kIN-BDyc5HBGpA&oe=69AC5B5C"),
 
         ],
       ),
