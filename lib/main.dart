@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Paratuli Unity Foundation - পাড়াতলী একতা ফাউন্ডেশন"),),
+      appBar: AppBar(title: Text("Rajib Hasan"),),
       // body: Center(
       //   // child: Text("Hello", style: TextStyle(fontSize: 40, color: Colors.blue),),
       //   // child: Icon(Icons.home, size: 52, color: Colors.blue,),
@@ -45,49 +45,94 @@ class HomePage extends StatelessWidget {
       //   ],
       //
       // ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.home),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.message),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.phone),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.contact_support_outlined),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.home),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.message),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.phone),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-          Icon(Icons.contact_support_outlined),
-          SizedBox(height: 30,),
-          Divider(height: 4,),
-          SizedBox(height: 30,),
-        ],
-
+/* -------------------------- Colum ---------------------------------- */
+      // body: Column(
+      //   mainAxisAlignment: MainAxisAlignment.start,
+      //   crossAxisAlignment: CrossAxisAlignment.stretch,
+      //   children: [
+      //     Divider(height: 4, color: Colors.red, thickness: 50,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.home),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.message),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.phone),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.contact_support_outlined),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.home),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.message),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.phone),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //     Icon(Icons.contact_support_outlined),
+      //     SizedBox(height: 30,),
+      //     Divider(height: 4,),
+      //     SizedBox(height: 30,),
+      //   ],
+      //
+      // ),
+// /* -------------------------- Container ---------------------------------- */
+//     body: Container(
+//       height: 200,
+//       width: 200,
+//       decoration: BoxDecoration(
+//         color: Colors.blue,
+//         border: Border.all(color: Colors.black),
+//         borderRadius: BorderRadius.circular(10),
+//       ),
+//     ),
+    body: Stack(
+      //     alignment: Alignment.center,
+      // alignment: Alignment.bottomCenter,
+      children: [
+      Container(
+      height: 200,
+      width: 200,
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
       ),
-
+      ),
+        Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            color: Colors.red,
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        Container(
+          alignment: Alignment.center,
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            color: Colors.green,
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ],
+    ),
     );
+
   }
 }
 
