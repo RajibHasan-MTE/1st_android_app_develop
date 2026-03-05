@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 
 
 
 void main(){
+  debugPaintSizeEnabled = false;
   runApp(myApp());
 }
 
@@ -46,47 +48,47 @@ class HomePage extends StatelessWidget {
       //
       // ),
 /* -------------------------- Colum ---------------------------------- */
-      // body: Column(
-      //   mainAxisAlignment: MainAxisAlignment.start,
-      //   crossAxisAlignment: CrossAxisAlignment.stretch,
-      //   children: [
-      //     Divider(height: 4, color: Colors.red, thickness: 50,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.home),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.message),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.phone),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.contact_support_outlined),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.home),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.message),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.phone),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //     Icon(Icons.contact_support_outlined),
-      //     SizedBox(height: 30,),
-      //     Divider(height: 4,),
-      //     SizedBox(height: 30,),
-      //   ],
-      //
-      // ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Divider(height: 4, color: Colors.red, thickness: 50,),
+          SizedBox(height: 30,),
+          Icon(Icons.home),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.message),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.phone),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.contact_support_outlined),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.home),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.message),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.phone),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+          Icon(Icons.contact_support_outlined),
+          SizedBox(height: 30,),
+          Divider(height: 4,),
+          SizedBox(height: 30,),
+        ],
+
+      ),
 // /* -------------------------- Container ---------------------------------- */
 //     body: Container(
 //       height: 200,
@@ -97,40 +99,43 @@ class HomePage extends StatelessWidget {
 //         borderRadius: BorderRadius.circular(10),
 //       ),
 //     ),
-    body: Stack(
-      //     alignment: Alignment.center,
-      // alignment: Alignment.bottomCenter,
-      children: [
-      Container(
-      height: 200,
-      width: 200,
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      ),
-        Container(
-          height: 150,
-          width: 150,
-          decoration: BoxDecoration(
-            color: Colors.red,
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        Container(
-          alignment: Alignment.center,
-          height: 100,
-          width: 100,
-          decoration: BoxDecoration(
-            color: Colors.green,
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      ],
-    ),
+/* --------------------------End Container ---------------------------------- */
+/* -------------------------- Start Stack ---------------------------------- */
+    // body: Stack(
+    //   //     alignment: Alignment.center,
+    //   // alignment: Alignment.bottomCenter,
+    //   children: [
+    //   Container(
+    //   height: 200,
+    //   width: 200,
+    //   decoration: BoxDecoration(
+    //     color: Colors.blue,
+    //     border: Border.all(color: Colors.black),
+    //     borderRadius: BorderRadius.circular(10),
+    //   ),
+    //   ),
+    //     Container(
+    //       height: 150,
+    //       width: 150,
+    //       decoration: BoxDecoration(
+    //         color: Colors.red,
+    //         border: Border.all(color: Colors.black),
+    //         borderRadius: BorderRadius.circular(10),
+    //       ),
+    //     ),
+    //     Container(
+    //       alignment: Alignment.center,
+    //       height: 100,
+    //       width: 100,
+    //       decoration: BoxDecoration(
+    //         color: Colors.green,
+    //         border: Border.all(color: Colors.black),
+    //         borderRadius: BorderRadius.circular(10),
+    //       ),
+    //     ),
+    //   ],
+    // ),
+/* --------------------------End Stack ---------------------------------- */
     );
 
   }
