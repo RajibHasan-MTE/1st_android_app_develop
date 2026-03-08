@@ -14,10 +14,7 @@ class HomePage extends StatelessWidget {
           child: Image.asset("assets/images/menu-outline.png"),
         ),
         leadingWidth: 50,
-        title: Text(
-          "Home",
-          style: AppTextStyle.titleBlack16,
-        ),
+        title: Text("Home", style: AppTextStyle.titleBlack16),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -50,20 +47,55 @@ class HomePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 30,),
-                  Text(
-                    "Today",
-                    style: AppTextStyle.titleWhite16,
-                  ),
-                  SizedBox(height: 10,),
-                  Text(
-                    "1st Ramadan 4445",
-                    style: AppTextStyle.titleWhite16,
-                  ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
+                  Text("Today", style: AppTextStyle.titleWhite16),
+                  SizedBox(height: 5),
+                  Text("1st Ramadan 4445", style: AppTextStyle.titleWhite16),
+                  SizedBox(height: 5),
                   Text(
                     "Tuesday, 12 Mar 2024",
-                    style: AppTextStyle.titleWhite16,
+                    style: AppTextStyle.titleWhite10,
+                  ),
+                  SizedBox(height: 5),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF5F5F5).withOpacity(0.9),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Ifter time-vhg:15 pm",
+                              style: AppTextStyle.titleViolate10,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xFF5F5F5).withOpacity(0.9),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Ifter time-vhg:15 pm",
+                              style: AppTextStyle.titleViolate10,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

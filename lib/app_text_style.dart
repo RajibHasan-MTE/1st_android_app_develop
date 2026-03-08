@@ -14,5 +14,17 @@ class AppTextStyle{
     color: Color(0xFFFFFFFF),
     fontWeight: FontWeight.normal,
   );
+  static final titleWhite10 = GoogleFonts.playfairDisplay(
+    fontSize: 10,
+    // color: Color(0xFF000000),
+    color: Color(0xFFFFFFFF),
+    fontWeight: FontWeight.normal,
+  );
+  static final titleViolate10 = GoogleFonts.playfairDisplay(
+    fontSize: 10,
+    // color: Color(0xFF000000),
+    color: Color(0xFF764CA5),
+    fontWeight: FontWeight.normal,
+  );
 
 }
