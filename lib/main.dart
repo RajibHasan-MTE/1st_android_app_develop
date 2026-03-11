@@ -1,11 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main(){
   runApp(MyApp());
 }
 
-// Root Widget
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,27 +13,28 @@ class MyApp extends StatelessWidget {
       home: CounterPage(),
     );
   }
+
+
 }
 
-// StatefulWidget
 class CounterPage extends StatefulWidget {
+
   @override
-  _CounterPageState createState() => _CounterPageState();
+  _CounterPageSate createState() => _CounterPageSate();
 }
 
-// State class (holds changing data)
-class _CounterPageState extends State<CounterPage> {
-  int count = 0; // state variable
+class _CounterPageSate extends State<CounterPage>{
 
-  void increment() {
+  int count = 0;
+  void increment(){
     setState(() {
       count++;
     });
   }
 
-  void decrement() {
+  void decrement(){
     setState(() {
-      count--;
+      if(count > 0) count--;
     });
   }
 
@@ -41,29 +42,36 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("StatefulWidget Demo"),
+        title: Text(
+            "Counter app",
+        ),
+        backgroundColor: Colors.purple,
+        titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Counter Value:",
-              style: TextStyle(fontSize: 22),
-            ),
-            Text(
-              "$count",
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
             ElevatedButton(
               onPressed: increment,
-              child: Text("Increase"),
+              child: Text(
+                "Increment",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+              ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20,),
+            Text(
+              "Counter Value $count",
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20,),
+
             ElevatedButton(
               onPressed: decrement,
-              child: Text("Decrease"),
+              child: Text(
+                "Decrement",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
             ),
           ],
         ),
@@ -71,3 +79,7 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 }
+
+
+
+
