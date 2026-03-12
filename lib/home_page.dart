@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(8),
             child: Column(
               children: [
                 Text("Category", style: AppTextStyle.textBlack16),

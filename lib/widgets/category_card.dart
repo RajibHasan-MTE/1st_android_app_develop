@@ -14,7 +14,8 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 75,
-      width: 85,
+      width: MediaQuery.of(context).size.width * 0.25 - 10,
+      // width: 85,
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Color(0xFFFFFFFF),
