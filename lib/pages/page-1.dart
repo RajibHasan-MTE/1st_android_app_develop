@@ -24,14 +24,19 @@ class _PageOneScreenState extends State<PageOneScreen> {
             const Text("Your are in page one"),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_){
-                          return PageTwoScreen();
-                        }
-                    ),
-                );
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_){
+                //           return PageTwoScreen();
+                //         }
+                //     ),
+                // );
+                // Navigator.pushNamed(context, "/pageTwo", arguments: "This data is passed to page two");
+                Navigator.pushNamed(context, "/pageTwo", arguments: {
+                  'name' : "Rajib",
+                  'age' : 30,
+                });
               },
               child: Text("Go to page two"),
             ),

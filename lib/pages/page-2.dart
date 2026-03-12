@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liveclass14/pages/page-3.dart';
 
 class PageTwoScreen extends StatefulWidget {
   const PageTwoScreen({super.key});
@@ -9,8 +10,20 @@ class PageTwoScreen extends StatefulWidget {
 }
 
 class _PageTwoScreenState extends State<PageTwoScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    // final arg = ModalRoute.of(context)!.settings.arguments as String;
+    final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final name = arg["name"];
+    final age = arg["age"];
     return Scaffold(
       backgroundColor: Colors.purpleAccent,
       appBar: AppBar(
@@ -28,19 +41,20 @@ class _PageTwoScreenState extends State<PageTwoScreen> {
               child: Text("Back to page one"),
             ),
 
-            const Text("Your are in page one"),
+            Text('$name'),
+            Text('$age'),
             ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (_){
-                //         return PageTwoScreen();
-                //       }
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_){
+                        return PageThreeScreen();
+                      }
+                  ),
+                );
               },
-              child: Text("Go to page two"),
+              child: Text("Go to page three"),
             ),
           ],
         ),
