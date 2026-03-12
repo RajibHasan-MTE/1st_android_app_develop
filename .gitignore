@@ -5,118 +5,61 @@
 *.swp
 .DS_Store
 .atom/
-.build/
 .buildlog/
 .history
 .svn/
-.swiftpm/
-migrate_working_dir/
+migrate_working_copy.xml
 
-# IntelliJ related
+# IntelliJ-related
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# Visual Studio Code-related
+.vscode/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# Flutter-related
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
-/coverage/
+
+# Android-related
+**/android/**/generated/
+**/android/gen/
+**/android/out/
+**/android/.gradle/
+**/android/local.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# iOS-related
+**/ios/.generated/
+**/ios/DerivedData/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.[mh]
+
+# Web-related
+lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
 
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-# --------------------
-# Flutter / Dart
-# --------------------
-.dart_tool/
-.packages
-.pub-cache/
-.pub/
-build/
-.flutter-plugins
-.flutter-plugins-dependencies
-.flutter-versions
-.metadata
-
-# IDE
-.idea/
-.vscode/
-*.iml
-
-# --------------------
-# Android
-# --------------------
-android/.gradle/
-android/local.properties
-android/key.properties
-android/**/key.jks
-android/**/keystore.jks
-android/**/keystore.properties
-android/**/upload-keystore.jks
-
-# Build outputs
-android/app/build/
-android/build/
-
-# Gradle
-.gradle/
-gradlew
-gradlew.bat
-gradle/wrapper/gradle-wrapper.jar
-
-# --------------------
-# iOS / macOS (optional)
-# --------------------
-ios/Pods/
-ios/.symlinks/
-ios/Flutter/ephemeral/
-ios/Flutter/Generated.xcconfig
-ios/Flutter/flutter_export_environment.sh
-ios/Runner.xcworkspace/
-ios/Runner/GeneratedPluginRegistrant.*
-
-macos/Pods/
-macos/Flutter/ephemeral/
-
-# --------------------
-# Web
-# --------------------
-build/web/
-
-# --------------------
-# Linux / Windows
-# --------------------
-linux/flutter/ephemeral/
-windows/flutter/ephemeral/
-
-# --------------------
-# Logs & temp
-# --------------------
-*.log
-*.tmp
-*.swp
-*.lock
-
-# --------------------
-# Environment files
-# --------------------
-.env
-.env.*
+# Executable distributions
+*.apk
+*.aab
+*.exe
+*.zip
+*.tar.gz
+*.rar
