@@ -7,27 +7,63 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rajib Hasan',
+      debugShowCheckedModeBanner: false,
+      title: "flutter demo",
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
       ),
-      home: MyHomePage(),
+      home: BottomNavigationBarPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget{
+/* ------------------ Bottom Navigation bar ------------------ */
+
+class BottomNavigationBarPage extends StatefulWidget {
+  @override
+  State<BottomNavigationBarPage> createState() =>
+      BottomNavigationBarPageState();
+}
+
+class BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
+  int index = 0;
+
+  final screens = [
+    Center(child: Text("Home")),
+    Center(child: Text("Setting")),
+    Center(child: Text("Person")),
+    Center(child: Text("Notification")),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("This is my app"),
+      appBar: AppBar(title: Text("Home Page")),
+      body: screens[index],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index,
+        backgroundColor: Colors.purpleAccent,
+        onTap: (value) {
+          setState(() {
+            index = value;
+          });
+        },
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.black,
+        // selectedLabelStyle: TextStyle(color: Colors.grey),
+        // unselectedLabelStyle: TextStyle(color: Colors.black),
+
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Setting"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Person"),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications_active_outlined), label: "Notification",
+          ),
+        ],
       ),
     );
   }
 }
-
