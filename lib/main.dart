@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: BottomNavigationBarPage(),
       // home: TabBarPage(),
-      home: DrawerPage(),
+      home: TabBarPage(),
     );
   }
 }
