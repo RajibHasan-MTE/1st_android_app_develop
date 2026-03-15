@@ -1,4 +1,4 @@
-package com.example.ramadan_tracker_app
+package com.example.navigationbar
 
 import io.flutter.embedding.android.FlutterActivity
 
