@@ -1,3 +1,7 @@
+import 'package:basics_counter_app/HomeScreen.dart';
+import 'package:basics_counter_app/NotificationSreen.dart';
+import 'package:basics_counter_app/PersonScreen.dart';
+import 'package:basics_counter_app/SettingScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +19,67 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
       ),
-      home: BottomNavigationBarPage(),
+      // home: BottomNavigationBarPage(),
+      // home: TabBarPage(),
+      home: DrawerPage(),
+    );
+  }
+}
+
+class DrawerPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Drawer")),
+      endDrawer: Drawer(
+        // drawer: Drawer(
+        child: ListView(
+          children: [
+            // DrawerHeader(child: Text("Menu"),),
+            DrawerHeader(child: Text("Menu")),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("home"),
+              onTap: () => {},
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
+              onTap: () => {},
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TabBarPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Tab bar"),
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.settings)),
+              Tab(icon: Icon(Icons.person)),
+              Tab(icon: Icon(Icons.notifications_active_rounded)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            HomeScreen(),
+            SettingScreen(),
+            PersonScreen(),
+            NotificationScreen(),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -32,10 +96,10 @@ class BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
   int index = 0;
 
   final screens = [
-    Center(child: Text("Home")),
-    Center(child: Text("Setting")),
-    Center(child: Text("Person")),
-    Center(child: Text("Notification")),
+    HomeScreen(),
+    SettingScreen(),
+    PersonScreen(),
+    NotificationScreen(),
   ];
 
   @override
@@ -45,6 +109,7 @@ class BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
       body: screens[index],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
+        type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.purpleAccent,
         onTap: (value) {
           setState(() {
@@ -60,7 +125,9 @@ class BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Setting"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Person"),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications_active_outlined), label: "Notification",
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_active_outlined),
+            label: "Notification",
           ),
         ],
       ),
