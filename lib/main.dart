@@ -53,8 +53,8 @@ class BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
         },
         unselectedItemColor: Colors.grey,
         selectedItemColor: Colors.black,
-        // selectedLabelStyle: TextStyle(color: Colors.grey),
-        // unselectedLabelStyle: TextStyle(color: Colors.black),
+        selectedLabelStyle: TextStyle(color: Colors.grey),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
 
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
