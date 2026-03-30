@@ -9,7 +9,7 @@ class TodoPage extends StatefulWidget {
 }
 
 class TodoPageView extends State<TodoPage> {
-  List ToDoList = [];
+  List ToDoList = [{"1" : "1"}, {"1" : "1"}, {"1" : "1"},];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +35,7 @@ class TodoPageView extends State<TodoPage> {
                   itemCount: ToDoList.length,
                     itemBuilder: (context, index){
                     return Card(
-                      child: Text("hello"),
+                      child: Text("List"),
                     );
                     },
                 )
