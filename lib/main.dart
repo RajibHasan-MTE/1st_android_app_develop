@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liveclass14/todo_page.dart';
 
-void main(){
+void main() {
   runApp(MyApp());
 }
 

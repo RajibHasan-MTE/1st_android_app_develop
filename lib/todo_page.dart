@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liveclass14/Style.dart';
 
 class TodoPage extends StatefulWidget {
   @override
@@ -9,7 +10,12 @@ class TodoPage extends StatefulWidget {
 }
 
 class TodoPageView extends State<TodoPage> {
-  List ToDoList = [{"1" : "1"}, {"1" : "1"}, {"1" : "1"},];
+  List ToDoList = [
+    {"1": "1"},
+    {"1": "1"},
+    {"1": "1"},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,23 +28,46 @@ class TodoPageView extends State<TodoPage> {
               flex: 10,
               child: Row(
                 children: [
-                  Expanded(child: TextFormField()),
                   Expanded(
-                    child: ElevatedButton(onPressed: () {}, child: Text("ADD")),
+                    flex: 70,
+                    child: TextFormField(
+                      decoration: AppInputDecoration("List Item"),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 30,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Text("ADD"),
+                      style: AppButtonStyle(),
+                    ),
                   ),
                 ],
               ),
             ),
             Expanded(
-                flex: 90,
-                child: ListView.builder(
-                  itemCount: ToDoList.length,
-                    itemBuilder: (context, index){
-                    return Card(
-                      child: Text("List"),
-                    );
-                    },
-                )
+              flex: 90,
+              child: ListView.builder(
+                itemCount: ToDoList.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: SizeBox50(
+                      Row(
+                        children: [
+                          Expanded(flex: 80, child: Text("Item")),
+                          Expanded(
+                            flex: 20,
+                            child: TextButton(
+                              onPressed: () {},
+                              child: Icon(Icons.delete),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
