@@ -7,7 +7,7 @@ const colorGreen = Color.fromRGBO(33, 191, 115, 1);
 const colorWhite = Color.fromRGBO(255, 255, 255, 1);
 const colorDarkBlue = Color.fromRGBO(44, 62, 80, 1);
 
-ScreenBackgrround(context){
+ScreenBackgrround(context) {
   return SvgPicture.asset(
     'assets/images/bg.svg',
     alignment: Alignment.center,
@@ -16,7 +16,6 @@ ScreenBackgrround(context){
     fit: BoxFit.cover,
   );
 }
-
 
 InputDecoration AppInputDecoration(label) {
   return InputDecoration(
@@ -31,5 +30,16 @@ InputDecoration AppInputDecoration(label) {
     ),
     border: OutlineInputBorder(),
     labelText: label,
+  );
+}
+
+DecoratedBox AppDropDownStyle(child) {
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      color: colorWhite,
+      border: Border.all(color: colorWhite, width: 1),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Padding(padding: EdgeInsets.only(left: 30, right: 30), child: child),
   );
 }
