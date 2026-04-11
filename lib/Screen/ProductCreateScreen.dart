@@ -9,6 +9,15 @@ class ProductCreateScreen extends StatefulWidget {
 }
 
 class _ProductCreateScreenState extends State<ProductCreateScreen> {
+  Map<String, dynamic> FormValues = {
+    "Img": "",
+    "ProductCode": "",
+    "ProductName": "",
+    "Qty": "",
+    "TotalPrice": "",
+    "UnitPrice": "",
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
