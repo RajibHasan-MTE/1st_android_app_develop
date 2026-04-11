@@ -12,27 +12,44 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Create Product"),
-      ),
+      appBar: AppBar(title: Text("Create Product")),
       body: Stack(
         children: [
           // BackGround Graphics
+          ScreenBackgrround(context),
           Container(
             child: (SingleChildScrollView(
               padding: EdgeInsets.all(10),
               child: Column(
                 children: [
-                  TextFormField(onChanged: (value){},decoration: AppInputDecoration('Product Name'),),
-                  TextFormField(onChanged: (value){},decoration: AppInputDecoration('Product Code'),),
-                  TextFormField(onChanged: (value){},decoration: AppInputDecoration('Product Image'),),
-                  TextFormField(onChanged: (value){},decoration: AppInputDecoration('Unit Price'),),
-                  TextFormField(onChanged: (value){},decoration: AppInputDecoration('Total Price'),),
-
+                  TextFormField(
+                    onChanged: (value) {},
+                    decoration: AppInputDecoration('Product Name'),
+                  ),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    onChanged: (value) {},
+                    decoration: AppInputDecoration('Product Code'),
+                  ),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    onChanged: (value) {},
+                    decoration: AppInputDecoration('Product Image'),
+                  ),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    onChanged: (value) {},
+                    decoration: AppInputDecoration('Unit Price'),
+                  ),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    onChanged: (value) {},
+                    decoration: AppInputDecoration('Total Price'),
+                  ),
                 ],
               ),
             )),
-          )
+          ),
         ],
       ),
     );
