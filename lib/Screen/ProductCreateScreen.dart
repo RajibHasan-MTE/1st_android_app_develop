@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liveclass14/Style/Style.dart';
 
+import '../Utility/Utility.dart';
+
 class ProductCreateScreen extends StatefulWidget {
   const ProductCreateScreen({super.key});
 
@@ -24,6 +26,24 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
     });
   }
 
+  FormOnSubmit() {
+    if (FormValues["Img"]!.isEmpty) {
+      ErrorToast("Image Link Required !");
+    } else if (FormValues['ProductCode']!.isEmpty) {
+      ErrorToast("Product Code Required !");
+    } else if (FormValues['ProductName']!.isEmpty) {
+      ErrorToast("Product Name Required !");
+    } else if (FormValues['Qty']!.isEmpty) {
+      ErrorToast("Product Qty Required !");
+    } else if (FormValues['TotalPrice']!.isEmpty) {
+      ErrorToast("Product Total Price Required !");
+    } else if (FormValues['UnitPrice']!.isEmpty) {
+      ErrorToast("Product Unit Price Required !");
+    }else{
+      ErrorToast("Submitted successfully");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,14 +59,14 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
                 children: [
                   TextFormField(
                     onChanged: (value) {
-                      InputOnChange("Product Name", value);
+                      InputOnChange("ProductName", value);
                     },
                     decoration: AppInputDecoration('ProductName'),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
                     onChanged: (value) {
-                      InputOnChange("Product Code", value);
+                      InputOnChange("ProductCode", value);
                     },
                     decoration: AppInputDecoration('ProductCode'),
                   ),
@@ -83,7 +103,7 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
                         DropdownMenuItem(child: Text('4 pcs'), value: "4 pcs"),
                       ],
                       onChanged: (value) {
-                        InputOnChange("Qty", value);
+                        InputOnChange("Qty", value ?? "");
                       },
                       underline: Container(),
                       isExpanded: true,
@@ -93,7 +113,9 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
                   Container(
                     child: ElevatedButton(
                       style: AppButtonStyle(),
-                      onPressed: () {},
+                      onPressed: () {
+                        FormOnSubmit();
+                      },
                       child: SuccessButtonChild("Submit"),
                     ),
                   ),
