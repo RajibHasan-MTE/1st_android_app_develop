@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liveclass14/Style/Style.dart';
 
+import '../RestAPI/RestClient.dart';
 import '../Utility/Utility.dart';
 
 class ProductCreateScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
     });
   }
 
-  FormOnSubmit() {
+  FormOnSubmit() async{
     if (FormValues["Img"]!.isEmpty) {
       ErrorToast("Image Link Required !");
     } else if (FormValues['ProductCode']!.isEmpty) {
@@ -41,6 +42,7 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
       ErrorToast("Product Unit Price Required !");
     }else{
       ErrorToast("Submitted successfully");
+      await ProductCreateRequest(FormValues);
     }
   }
 

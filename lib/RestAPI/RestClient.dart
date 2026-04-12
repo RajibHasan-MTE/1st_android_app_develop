@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:liveclass14/Utility/Utility.dart';
 
-ProductCreateRequest(FormValues) async {
+Future<bool> ProductCreateRequest(FormValues) async {
   var URL = Uri.parse("https://crud.teamrabbil.com/api/v1/CreateProduct");
   var PostBody = json.encode(FormValues);
   var PostHeader = {"Content-Type": "application/json"};
@@ -11,5 +12,10 @@ ProductCreateRequest(FormValues) async {
   var ResultBody = json.decode(response.body);
 
   if (ResultCode == 200 && ResultBody['status'] == "success") {
-  } else {}
+    ErrorToast("Request Success");
+    return true;
+  } else {
+    ErrorToast("Request fail ? try again");
+    return false;
+  }
 }
