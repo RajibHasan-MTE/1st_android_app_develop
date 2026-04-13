@@ -64,17 +64,17 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
     );
   }
 
-  GotoUpadate(context) {
+  GotoUpadate(context, productItem) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (builder) => ProductupadateScreen()),
+      MaterialPageRoute(builder: (builder) => ProductupadateScreen(productItem)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("List view")),
+      appBar: AppBar(title: Text("Robotics shop")),
       body: Stack(
         children: [
           ScreenBackgrround(context),
@@ -116,7 +116,7 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
                                       children: [
                                         OutlinedButton(
                                           onPressed: () {
-                                            GotoUpadate(context);
+                                            GotoUpadate(context, ProductList[index]);
                                           },
                                           child: Icon(
                                             CupertinoIcons
