@@ -40,8 +40,13 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
           content: Text("Once delete, you can't get it back"),
           actions: [
             OutlinedButton(
-              onPressed: () {
-                SuccessToast(id);
+              onPressed: () async {
+                Navigator.pop(context);
+                setState(() {
+                  Loading = true;
+                });
+                await ProductDeleteRequest(id);
+                await CallData();
               },
               child: Text("Yes"),
             ),
