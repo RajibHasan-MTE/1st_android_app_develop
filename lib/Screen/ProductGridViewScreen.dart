@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:liveclass14/Style/Style.dart';
+import 'package:liveclass14/Utility/Utility.dart';
 
 import '../RestAPI/RestClient.dart';
 
@@ -28,6 +29,32 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
       ProductList = data;
       Loading = false;
     });
+  }
+
+  DeleteItem(id) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete !"),
+          content: Text("Once delete, you can't get it back"),
+          actions: [
+            OutlinedButton(
+              onPressed: () {
+                SuccessToast(id);
+              },
+              child: Text("Yes"),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("No"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -84,7 +111,11 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
                                         ),
                                         SizedBox(width: 4),
                                         OutlinedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            DeleteItem(
+                                              ProductList[index]['_id'],
+                                            );
+                                          },
                                           child: Icon(
                                             CupertinoIcons.delete,
                                             size: 18,
