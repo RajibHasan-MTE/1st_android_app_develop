@@ -44,6 +44,7 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
             child: Loading ? (Center(child: CircularProgressIndicator(),)) : (
             GridView.builder(
                 gridDelegate: ProductGridViewStyle(),
+                itemCount: ProductList.length,
                 itemBuilder: (context, index){
                   return Card(
                     child: Column(
