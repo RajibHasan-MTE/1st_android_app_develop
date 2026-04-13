@@ -5,14 +5,14 @@ import '../RestAPI/RestClient.dart';
 import '../Style/Style.dart';
 import '../Utility/Utility.dart';
 
-class Productupadatescreen extends StatefulWidget {
-  const Productupadatescreen({super.key});
+class ProductupadateScreen extends StatefulWidget {
+  const ProductupadateScreen({super.key});
 
   @override
-  State<Productupadatescreen> createState() => _ProductupadatescreenState();
+  State<ProductupadateScreen> createState() => _ProductupadateScreenState();
 }
 
-class _ProductupadatescreenState extends State<Productupadatescreen> {
+class _ProductupadateScreenState extends State<ProductupadateScreen> {
   Map<String, dynamic> FormValues = {
     "Img": "",
     "ProductCode": "",
@@ -57,7 +57,7 @@ class _ProductupadatescreenState extends State<Productupadatescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create Product")),
+      appBar: AppBar(title: Text("Update product")),
       body: Stack(
         children: [
           // BackGround Graphics

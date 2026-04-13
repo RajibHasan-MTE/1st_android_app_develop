@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liveclass14/Screen/ProductCreateScreen.dart';
+import 'package:liveclass14/Screen/ProductUpadateScreen.dart';
 import 'package:liveclass14/Style/Style.dart';
 import 'package:liveclass14/Utility/Utility.dart';
 
@@ -62,6 +64,13 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
     );
   }
 
+  GotoUpadate(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (builder) => ProductupadateScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +115,9 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         OutlinedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            GotoUpadate(context);
+                                          },
                                           child: Icon(
                                             CupertinoIcons
                                                 .ellipsis_vertical_circle,
@@ -140,6 +151,15 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
                   ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (builder) => ProductCreateScreen()),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
