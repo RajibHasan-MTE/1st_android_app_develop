@@ -31,12 +31,12 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
         shadowColor: Colors.black45,
 
         /*----------1.1 RoundedRectangleBorder - BorderRadius.vertical - bottom, top ------------------ */
-        // shape: RoundedRectangleBorder(
-        //   side: BorderSide(color: Colors.black, width: 10),
-        //   borderRadius: BorderRadius.vertical(
-        //     bottom: Radius.circular(50)
-        //   )
-        // ),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.black, width: 10),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(50)
+          )
+        ),
 
         /*----------1.2 RoundedRectangleBorder - BorderRadius.horizontal - left, right ------------------ */
         // shape: RoundedRectangleBorder(
@@ -55,12 +55,12 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
         // ),
 
         /*----------2.2 ContinuousRectangleBorder - BorderRadius.horizontal - left, right ------------------ */
-        shape: ContinuousRectangleBorder(
-            side: BorderSide(color: Colors.black, width: 10),
-            borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(50)
-            )
-        ),
+        // shape: ContinuousRectangleBorder(
+        //     side: BorderSide(color: Colors.black, width: 10),
+        //     borderRadius: BorderRadius.horizontal(
+        //         left: Radius.circular(50)
+        //     )
+        // ),
 
       ),
       body: Center(child: Text("App Bar learned"),),
