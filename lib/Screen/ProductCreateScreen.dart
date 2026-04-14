@@ -56,6 +56,7 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(title: Text("Create Product")),
       body: Stack(
         children: [

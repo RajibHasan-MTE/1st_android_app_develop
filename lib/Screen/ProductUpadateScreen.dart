@@ -126,6 +126,7 @@ class _ProductupadateScreenState extends State<ProductupadateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(title: Text("Update product")),
       body: Stack(
         children: [

@@ -74,6 +74,7 @@ class _ProductGridViewScreenState extends State<ProductGridViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(title: Text("Robotics shop")),
       body: Stack(
         children: [
