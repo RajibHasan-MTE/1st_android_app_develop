@@ -109,65 +109,10 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // bad
-                      Column(
-                        children: [
-                          EmotionFace(emotionFace: '😌'),
-                          SizedBox(height: 8),
-                          Text(
-                            "Badly",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Fine
-                      Column(
-                        children: [
-                          EmotionFace(emotionFace: '☺️'),
-                          SizedBox(height: 8),
-                          Text(
-                            "Fine",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Well
-                      Column(
-                        children: [
-                          EmotionFace(emotionFace: '😁'),
-                          SizedBox(height: 8),
-                          Text(
-                            "Well",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // excellent
-                      Column(
-                        children: [
-                          EmotionFace(emotionFace: '😄'),
-                          SizedBox(height: 8),
-                          Text(
-                            "Excellent",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                      EmotionFace(emotionFace: '😌', emotionName: 'Badly',),
+                      EmotionFace(emotionFace: '😌', emotionName: 'Fine',),
+                      EmotionFace(emotionFace: '😁', emotionName: 'Well',),
+                      EmotionFace(emotionFace: '😄', emotionName: 'Excellent',),
                     ],
                     //17:52
                   ),
