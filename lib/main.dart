@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,23 +26,28 @@ class CounterPage extends StatefulWidget {
 class _CounterPageState extends State<CounterPage> {
   int counter = 0;
 
-  final FirebaseFirestore db = FirebaseFirestore.instance;
+  // 🔥 Realtime Database reference
+  final DatabaseReference dbRef =
+  FirebaseDatabase.instance.ref("counter");
 
   // 🔽 LOAD DATA FROM FIREBASE
   Future<void> loadData() async {
     try {
-      var doc = await db.collection("counter").doc("value").get();
+      final snapshot = await dbRef.get();
 
-      if (doc.exists && doc.data() != null) {
+      if (snapshot.exists && snapshot.value != null) {
+        final data = Map<String, dynamic>.from(snapshot.value as Map);
+
         setState(() {
-          counter = (doc.data()!["count"] ?? 0).toInt();
+          counter = data["count"] ?? 0;
         });
+
         print("Loaded from Firebase: $counter");
       } else {
         print("No data found, starting from 0");
       }
     } catch (e) {
-      print("Error loading data: $e");
+      print("Error loading: $e");
     }
   }
 
@@ -53,13 +58,13 @@ class _CounterPageState extends State<CounterPage> {
     setState(() {});
 
     try {
-      await db.collection("counter").doc("value").set({
+      await dbRef.set({
         "count": counter,
-        "updated_at": DateTime.now(),
       });
+
       print("Saved to Firebase: $counter");
     } catch (e) {
-      print("Error saving data: $e");
+      print("Error saving: $e");
     }
   }
 
@@ -73,7 +78,7 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("🔥 Firebase Counter"),
+        title: Text("📡 Firebase + ESP32 Counter"),
         centerTitle: true,
       ),
       body: Center(
