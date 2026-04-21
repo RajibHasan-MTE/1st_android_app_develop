@@ -1,4 +1,4 @@
-package com.example.minimal_weather_app
+package com.example.counter_app
 
 import io.flutter.embedding.android.FlutterActivity
 

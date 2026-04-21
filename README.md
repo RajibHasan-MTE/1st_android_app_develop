@@ -1,4 +1,4 @@
-# minimal_weather_app
+# counter_app
 
 A new Flutter project.
 
