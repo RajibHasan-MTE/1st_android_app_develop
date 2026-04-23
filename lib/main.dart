@@ -12,38 +12,50 @@ class MyApp extends StatelessWidget {
   }
 }
 
-import 'package:flutter/material.dart';
 
-class TitleSpacingExample extends StatelessWidget {
+
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0, // 🔥 No gap
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 220,
+            pinned: true,
+            floating: true,
+            snap: true,
+            backgroundColor: Colors.blue,
 
-        leading: Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(
-              "https://i.pravatar.cc/150?img=5",
+            title: Text("Profile"),
+
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    "https://picsum.photos/500",
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
 
-        title: Text(
-          "Rajib Hasan",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => ListTile(
+                title: Text("Item $index"),
+              ),
+              childCount: 30,
+            ),
           ),
         ],
       ),
-
-      body: Center(child: Text("Home")),
     );
   }
 }
