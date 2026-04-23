@@ -12,43 +12,50 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        // 🔥 Increased height
-        backgroundColor: Colors.blue,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 220,
+            pinned: true,
+            floating: true,
+            snap: true,
+            backgroundColor: Colors.blue,
 
-        leading: Padding(
-          padding: EdgeInsets.only(left: 12),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=3"),
-          ),
-        ),
-        leadingWidth: 60,
+            title: Text("Profile"),
 
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Welcome Back 👋", style: TextStyle(fontSize: 14)),
-            SizedBox(height: 4),
-            Text(
-              "Rajib Hasan",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    "https://picsum.photos/500",
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
 
-        actions: [
-          IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
-          SizedBox(width: 10),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => ListTile(
+                title: Text("Item $index"),
+              ),
+              childCount: 30,
+            ),
+          ),
         ],
       ),
-
-      body: Center(child: Text("Home Screen")),
     );
   }
 }
