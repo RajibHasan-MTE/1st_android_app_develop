@@ -8,29 +8,47 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: HomePage());
   }
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[600],
-        title: Text("Quantum Robotics"),
-        // centerTitle: true,
-        // centerTitle: Theme.of(context).platform == TargetPlatform.iOS
-        centerTitle: Theme.of(context).platform == TargetPlatform.android
+        toolbarHeight: 100,
+        // 🔥 Increased height
+        backgroundColor: Colors.blue,
 
+        leading: Padding(
+          padding: EdgeInsets.only(left: 12),
+          child: CircleAvatar(
+            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=3"),
+          ),
+        ),
+        leadingWidth: 60,
+
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Welcome Back 👋", style: TextStyle(fontSize: 14)),
+            SizedBox(height: 4),
+            Text(
+              "Rajib Hasan",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+
+        actions: [
+          IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
+          SizedBox(width: 10),
+        ],
       ),
+
+      body: Center(child: Text("Home Screen")),
     );
   }
 }
-
-
