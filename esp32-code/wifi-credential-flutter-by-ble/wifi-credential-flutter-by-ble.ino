@@ -5,8 +5,8 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
-
-/* ---------------- Storage ---------------- */
+//adhflsdjfl
+/* ---------------- Storages ---------------- */
 Preferences prefs;
 WebServer server(80);
 
