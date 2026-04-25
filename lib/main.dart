@@ -100,6 +100,8 @@ class _BLEHomePageState extends State<BLEHomePage> {
     );
   }
 
+  bool isScanning = false;
+
   /* ---------------- UI ---------------- */
   @override
   Widget build(BuildContext context) {
@@ -111,14 +113,45 @@ class _BLEHomePageState extends State<BLEHomePage> {
         padding: EdgeInsets.all(12),
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: startScan,
-              child: Text("Scan ESP32"),
+            Container(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: startScan,
+                child: Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Row(
+
+                    children: [
+                      Text("Scan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40,),),
+                      Icon(Icons.bluetooth, size: 40, color: Colors.blue[800],),
+                    ],
+                  ),
+                ),
+              ),
             ),
 
             SizedBox(height: 10),
 
-            Expanded(
+            // SingleChildScrollView(
+            //   child: Column(
+            //     children: devices.map((item) {
+            //       final device = item.device;
+            //
+            //       return ListTile(
+            //         title: Text(
+            //           device.name.isEmpty
+            //               ? "Unknown Device"
+            //               : device.name,
+            //         ),
+            //         subtitle: Text(device.id.toString()),
+            //         onTap: () => connectToDevice(device),
+            //       );
+            //     }).toList(),
+            //   ),
+            // ),
+            SizedBox(
+              height: 200,
               child: ListView.builder(
                 itemCount: devices.length,
                 itemBuilder: (context, index) {
