@@ -1,142 +1,187 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:async';
 
-void main() => runApp(const MaterialApp(home: DeviceListScreen(), debugShowCheckedModeBanner: false));
+void main() => runApp(const MaterialApp(home: HomePage(), debugShowCheckedModeBanner: false));
 
-// --- SCREEN 1: LIST OF DEVICES ---
-class DeviceListScreen extends StatefulWidget {
-  const DeviceListScreen({super.key});
+// --- HOME PAGE (MAIN DASHBOARD) ---
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
   @override
-  _DeviceListScreenState createState() => _DeviceListScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _DeviceListScreenState extends State<DeviceListScreen> {
-  List<ScanResult> devices = [];
-
-  void startScan() {
-    setState(() => devices.clear());
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-    FlutterBluePlus.scanResults.listen((results) {
-      // Filter for ESP32 devices
-      setState(() => devices = results.where((r) => r.device.platformName.contains("ESP32")).toList());
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Scan Building Devices")),
-      body: ListView.builder(
-        itemCount: devices.length,
-        itemBuilder: (c, i) => ListTile(
-          leading: const Icon(Icons.meeting_room),
-          title: Text(devices[i].device.platformName),
-          subtitle: Text(devices[i].device.remoteId.toString()),
-          onTap: () {
-            FlutterBluePlus.stopScan();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ControlPanel(device: devices[i].device)));
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(onPressed: startScan, child: const Icon(Icons.search)),
-    );
-  }
-}
-
-// --- SCREEN 2: CONTROL PANEL ---
-class ControlPanel extends StatefulWidget {
-  final BluetoothDevice device;
-  const ControlPanel({super.key, required this.device});
-
-  @override
-  _ControlPanelState createState() => _ControlPanelState();
-}
-
-class _ControlPanelState extends State<ControlPanel> {
+class _HomePageState extends State<HomePage> {
+  List<Map<String, String>> savedRooms = [];
+  BluetoothDevice? connectedDevice;
   BluetoothCharacteristic? ctrlChar;
-  double temp = 0.0, humid = 0.0;
-  bool lightStatus = false, fanStatus = false;
-
-  final String sUUID = "4fafc201-0000-459e-8fcc-c5c9c331914b";
-  final String dUUID = "4fafc201-0001-459e-8fcc-c5c9c331914b";
-  final String cUUID = "4fafc201-0002-459e-8fcc-c5c9c331914b";
+  Map<String, dynamic> status = {"t": 0, "h": 0, "l": 0, "f": 0};
 
   @override
   void initState() {
     super.initState();
-    connectAndDiscover();
+    loadSavedRooms();
   }
 
-  void connectAndDiscover() async {
-    await widget.device.connect();
-    List<BluetoothService> services = await widget.device.discoverServices();
-    for (var s in services) {
-      if (s.uuid.toString().toLowerCase() == sUUID) {
-        for (var c in s.characteristics) {
-          String charUuid = c.uuid.toString().toLowerCase();
-          if (charUuid == cUUID) ctrlChar = c;
-          if (charUuid == dUUID) {
-            await c.setNotifyValue(true);
-            c.lastValueStream.listen((value) {
-              if (value.isNotEmpty) {
-                String raw = utf8.decode(value);
-                Map<String, dynamic> data = jsonDecode(raw);
-                setState(() {
-                  temp = (data['temp'] as num).toDouble();
-                  humid = (data['humid'] as num).toDouble();
-                  lightStatus = data['light'] == 1;
-                  fanStatus = data['fan'] == 1;
-                });
-              }
-            });
+  Future<void> loadSavedRooms() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> raw = prefs.getStringList('rooms') ?? [];
+    setState(() {
+      savedRooms = raw.map((s) => Map<String, String>.from(jsonDecode(s))).toList();
+    });
+  }
+
+  void connect(String id) async {
+    try {
+      BluetoothDevice device = BluetoothDevice.fromId(id);
+      await device.connect();
+      setState(() => connectedDevice = device);
+
+      List<BluetoothService> services = await device.discoverServices();
+      for (var s in services) {
+        if (s.uuid.toString().contains("0000")) { // Service
+          for (var c in s.characteristics) {
+            if (c.uuid.toString().contains("0002")) ctrlChar = c; // Control
+            if (c.uuid.toString().contains("0001")) { // Data
+              await c.setNotifyValue(true);
+              c.lastValueStream.listen((val) {
+                if (val.isNotEmpty && mounted) {
+                  setState(() => status = jsonDecode(utf8.decode(val)));
+                }
+              });
+            }
           }
         }
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Could not connect!")));
     }
   }
 
-  void sendCmd(String key, int val) async {
-    if (ctrlChar != null) {
-      String cmd = jsonEncode({key: val});
-      await ctrlChar!.write(cmd.codeUnits);
-    }
+  void toggle(String key, int val) async {
+    if (ctrlChar != null) await ctrlChar!.write(jsonEncode({key: val}).codeUnits);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.device.platformName)),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              _weatherItem("Temp", "$temp°C", Icons.thermostat, Colors.orange),
-              _weatherItem("Humid", "$humid%", Icons.water_drop, Colors.blue),
-            ]),
-            const SizedBox(height: 40),
-            SwitchListTile(
-              title: const Text("Room Light"),
-              value: lightStatus,
-              onChanged: (v) => sendCmd("l", v ? 1 : 0),
-            ),
-            SwitchListTile(
-              title: const Text("Room Fan"),
-              value: fanStatus,
-              onChanged: (v) => sendCmd("f", v ? 1 : 0),
-            ),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: const Text("My Smart Building"), actions: [
+        IconButton(icon: const Icon(Icons.add_box), onPressed: () =>
+            Navigator.push(context, MaterialPageRoute(builder: (c) => const AddRoomPage())).then((_) => loadSavedRooms()))
+      ]),
+      body: Column(children: [
+        if (connectedDevice != null) _buildLiveControl(),
+        const Padding(padding: EdgeInsets.all(10), child: Text("Your Configured Rooms", style: TextStyle(color: Colors.grey))),
+        Expanded(child: ListView.builder(
+          itemCount: savedRooms.length,
+          itemBuilder: (c, i) => ListTile(
+            leading: const Icon(Icons.home),
+            title: Text(savedRooms[i]['name']!),
+            subtitle: Text(savedRooms[i]['id']!),
+            onTap: () => connect(savedRooms[i]['id']!),
+          ),
+        ))
+      ]),
     );
   }
 
-  Widget _weatherItem(String label, String value, IconData icon, Color color) {
-    return Column(children: [
-      Icon(icon, color: color, size: 40),
-      Text(label, style: const TextStyle(color: Colors.grey)),
-      Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-    ]);
+  Widget _buildLiveControl() {
+    return Card(
+      margin: const EdgeInsets.all(10),
+      color: Colors.blue[50],
+      child: Column(children: [
+        ListTile(title: Text("Controlling: ${connectedDevice!.platformName}"), trailing: const Icon(Icons.bluetooth_connected, color: Colors.blue)),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Text("${status['t']}°C", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text("${status['h']}% Humid", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ]),
+        ButtonBar(alignment: MainAxisAlignment.center, children: [
+          ElevatedButton(onPressed: () => toggle("l", status['l'] == 1 ? 0 : 1), child: Text(status['l'] == 1 ? "Light OFF" : "Light ON")),
+          ElevatedButton(onPressed: () => toggle("f", status['f'] == 1 ? 0 : 1), child: Text(status['f'] == 1 ? "Fan OFF" : "Fan ON")),
+        ])
+      ]),
+    );
+  }
+}
+
+// --- SCAN & ADD PAGE ---
+class AddRoomPage extends StatefulWidget {
+  const AddRoomPage({super.key});
+  @override
+  _AddRoomPageState createState() => _AddRoomPageState();
+}
+
+class _AddRoomPageState extends State<AddRoomPage> {
+  List<ScanResult> results = [];
+  final TextEditingController _nameController = TextEditingController();
+  StreamSubscription? _scanSub;
+
+  @override
+  void dispose() {
+    _scanSub?.cancel();
+    FlutterBluePlus.stopScan();
+    super.dispose();
+  }
+
+  void startScan() async {
+    setState(() => results.clear());
+    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
+    _scanSub = FlutterBluePlus.scanResults.listen((res) {
+      if (mounted) {
+        setState(() => results = res.where((r) => r.device.platformName.toUpperCase().contains("ESP32")).toList());
+      }
+    });
+  }
+
+  void saveRoom(BluetoothDevice d) async {
+    if (_nameController.text.isEmpty) return;
+    final prefs = await SharedPreferences.getInstance();
+    List<String> raw = prefs.getStringList('rooms') ?? [];
+
+    // Save locally
+    raw.add(jsonEncode({'name': _nameController.text, 'id': d.remoteId.toString()}));
+    await prefs.setStringList('rooms', raw);
+
+    // Optional: Send name change command to ESP32
+    try {
+      await d.connect();
+      var services = await d.discoverServices();
+      for (var s in services) {
+        for (var c in s.characteristics) {
+          if (c.uuid.toString().contains("0002")) {
+            await c.write(jsonEncode({"name": _nameController.text}).codeUnits);
+          }
+        }
+      }
+    } catch (e) { /* silent fail */ }
+
+    if (mounted) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("New Device Configuration")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(children: [
+          TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Set Room Name (e.g. Living Room)")),
+          const SizedBox(height: 10),
+          ElevatedButton(onPressed: startScan, child: const Text("Scan for Nearby ESP32s")),
+          const Divider(),
+          Expanded(child: ListView.builder(
+            itemCount: results.length,
+            itemBuilder: (c, i) => ListTile(
+              title: Text(results[i].device.platformName),
+              subtitle: Text(results[i].device.remoteId.toString()),
+              trailing: const Icon(Icons.add_circle_outline),
+              onTap: () => saveRoom(results[i].device),
+            ),
+          ))
+        ]),
+      ),
+    );
   }
 }
