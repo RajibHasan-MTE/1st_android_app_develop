@@ -6,67 +6,69 @@
 
 #define DHTPIN 4
 #define DHTTYPE DHT11
+#define LED_PIN 2 // Internal LED on most ESP32s
+
 DHT dht(DHTPIN, DHTTYPE);
 
-// --- Custom UUID System ---
-#define SERVICE_UUID        "4fafc201-0000-459e-8fcc-c5c9c331914b"
-#define TEMP_CHAR_UUID       "4fafc201-0001-459e-8fcc-c5c9c331914b"
-#define HUMID_CHAR_UUID      "4fafc201-0002-459e-8fcc-c5c9c331914b"
+#define SERVICE_UUID   "4fafc201-0000-459e-8fcc-c5c9c331914b"
+#define TEMP_UUID      "4fafc201-0001-459e-8fcc-c5c9c331914b"
+#define HUMID_UUID     "4fafc201-0002-459e-8fcc-c5c9c331914b"
+#define LED_UUID       "4fafc201-0003-459e-8fcc-c5c9c331914b"
 
-BLECharacteristic *pTempChar;
-BLECharacteristic *pHumidChar;
+BLECharacteristic *pTempChar, *pHumidChar, *pLedChar;
 bool deviceConnected = false;
 
-class MyServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) { deviceConnected = true; };
-    void onDisconnect(BLEServer* pServer) { 
-      deviceConnected = false; 
-      pServer->getAdvertising()->start(); // Restart advertising so phone can reconnect
+// CALLBACK: Runs when Flutter writes to the LED UUID
+class LedCallbacks: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+      // Use String (capital S) instead of std::string
+      String value = pCharacteristic->getValue(); 
+
+      if (value.length() > 0) {
+        Serial.print("Received Value: ");
+        Serial.println(value);
+
+        if (value == "1") {
+          digitalWrite(LED_PIN, HIGH);
+        } else if (value == "0") {
+          digitalWrite(LED_PIN, LOW);
+        }
+      }
     }
 };
 
 void setup() {
   Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
   dht.begin();
 
-  BLEDevice::init("ESP32_Weather_Station");
+  BLEDevice::init("ESP32_Full_Station");
   BLEServer *pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new MyServerCallbacks());
-
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
-  // Create Temperature Characteristic
-  pTempChar = pService->createCharacteristic(
-                TEMP_CHAR_UUID,
-                BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
-              );
-  pTempChar->addDescriptor(new BLE2902()); // Required for Notifications
-
-  // Create Humidity Characteristic
-  pHumidChar = pService->createCharacteristic(
-                HUMID_CHAR_UUID,
-                BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
-              );
+  // Weather Characteristics (Notify)
+  pTempChar = pService->createCharacteristic(TEMP_UUID, BLECharacteristic::PROPERTY_NOTIFY);
+  pTempChar->addDescriptor(new BLE2902());
+  
+  pHumidChar = pService->createCharacteristic(HUMID_UUID, BLECharacteristic::PROPERTY_NOTIFY);
   pHumidChar->addDescriptor(new BLE2902());
+
+  // LED Characteristic (Write)
+  pLedChar = pService->createCharacteristic(LED_UUID, BLECharacteristic::PROPERTY_WRITE);
+  pLedChar->setCallbacks(new LedCallbacks()); // Attach the listener here!
 
   pService->start();
   pServer->getAdvertising()->start();
 }
 
 void loop() {
-  if (deviceConnected) {
-    float t = dht.readTemperature();
-    float h = dht.readHumidity();
-
-    if (!isnan(t) && !isnan(h)) {
-      pTempChar->setValue(String(t).c_str());
-      pTempChar->notify();
-
-      pHumidChar->setValue(String(h).c_str());
-      pHumidChar->notify();
-      
-      Serial.printf("Sent: T:%.1f H:%.1f\n", t, h);
-    }
-    delay(2000);
+  float t = dht.readTemperature();
+  float h = dht.readHumidity();
+  if (!isnan(t) && !isnan(h)) {
+    pTempChar->setValue(String(t).c_str());
+    pTempChar->notify();
+    pHumidChar->setValue(String(h).c_str());
+    pHumidChar->notify();
   }
+  delay(2000);
 }
