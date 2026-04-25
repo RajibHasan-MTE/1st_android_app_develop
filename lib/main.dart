@@ -1,206 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:async';
+import 'dart:convert';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(const MaterialApp(home: WeatherPage()));
 
-class MyApp extends StatelessWidget {
+class WeatherPage extends StatefulWidget {
+  const WeatherPage({super.key});
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: BLEHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  _WeatherPageState createState() => _WeatherPageState();
 }
 
-class BLEHomePage extends StatefulWidget {
-  @override
-  _BLEHomePageState createState() => _BLEHomePageState();
-}
-
-class _BLEHomePageState extends State<BLEHomePage> {
-  List<ScanResult> devices = [];
-  StreamSubscription? scanSubscription;
-
+class _WeatherPageState extends State<WeatherPage> {
+  String temp = "--";
+  String humid = "--";
   BluetoothDevice? connectedDevice;
-  BluetoothCharacteristic? characteristic;
 
-  TextEditingController ssidController = TextEditingController();
-  TextEditingController passController = TextEditingController();
+  final String serviceUUID = "4fafc201-0000-459e-8fcc-c5c9c331914b";
+  final String tempUUID    = "4fafc201-0001-459e-8fcc-c5c9c331914b";
+  final String humidUUID   = "4fafc201-0002-459e-8fcc-c5c9c331914b";
 
-  final String serviceUUID = "12345678-1234-1234-1234-1234567890ab";
-  final String charUUID = "abcd1234-1234-1234-1234-abcdef123456";
-
-  @override
-  void initState() {
-    super.initState();
-    requestPermissions();
-  }
-
-  void requestPermissions() async {
-    await Permission.bluetoothScan.request();
-    await Permission.bluetoothConnect.request();
-    await Permission.location.request();
-  }
-
-  /* ---------------- SCAN ---------------- */
-  void startScan() {
-    devices.clear();
-
-    FlutterBluePlus.stopScan();
-
-    FlutterBluePlus.startScan(timeout: Duration(seconds: 5));
-
-    scanSubscription?.cancel();
-
-    scanSubscription = FlutterBluePlus.scanResults.listen((results) {
-      setState(() {
-        devices = results;
-      });
+  void findAndConnect() async {
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    FlutterBluePlus.scanResults.listen((results) async {
+      for (ScanResult r in results) {
+        if (r.device.platformName == "ESP32_Weather_Station") {
+          FlutterBluePlus.stopScan();
+          await r.device.connect();
+          setState(() => connectedDevice = r.device);
+          setupNotifications(r.device);
+          break;
+        }
+      }
     });
   }
 
-  /* ---------------- CONNECT ---------------- */
-  Future<void> connectToDevice(BluetoothDevice device) async {
-    connectedDevice = device;
-
-    await device.connect();
-
-    List<BluetoothService> services =
-    await device.discoverServices();
-
-    for (var service in services) {
-      if (service.uuid.toString() == serviceUUID) {
-        for (var char in service.characteristics) {
-          if (char.uuid.toString() == charUUID) {
-            characteristic = char;
-          }
+  void setupNotifications(BluetoothDevice device) async {
+    List<BluetoothService> services = await device.discoverServices();
+    for (var s in services) {
+      if (s.uuid.toString() == serviceUUID) {
+        for (var c in s.characteristics) {
+          // Subscribe to both temperature and humidity
+          await c.setNotifyValue(true);
+          c.lastValueStream.listen((value) {
+            String data = utf8.decode(value);
+            setState(() {
+              if (c.uuid.toString() == tempUUID) temp = data;
+              if (c.uuid.toString() == humidUUID) humid = data;
+            });
+          });
         }
       }
     }
-
-    setState(() {});
   }
 
-  /* ---------------- SEND WIFI ---------------- */
-  Future<void> sendWiFi() async {
-    if (characteristic == null) return;
-
-    String data =
-        "${ssidController.text},${passController.text}";
-
-    await characteristic!.write(data.codeUnits);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("WiFi Sent to ESP32")),
-    );
-  }
-
-  bool isScanning = false;
-
-  /* ---------------- UI ---------------- */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ESP32 BLE WiFi Setup"),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(12),
+      backgroundColor: Colors.blue[50],
+      appBar: AppBar(title: const Text("ESP32 Weather Station")),
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 200,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: startScan,
-                child: Padding(
-                  padding: EdgeInsets.all(0),
-                  child: Row(
+            if (connectedDevice == null)
+              ElevatedButton(onPressed: findAndConnect, child: const Text("Connect to ESP32")),
 
-                    children: [
-                      Text("Scan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40,),),
-                      Icon(Icons.bluetooth, size: 40, color: Colors.blue[800],),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 10),
-
-            // SingleChildScrollView(
-            //   child: Column(
-            //     children: devices.map((item) {
-            //       final device = item.device;
-            //
-            //       return ListTile(
-            //         title: Text(
-            //           device.name.isEmpty
-            //               ? "Unknown Device"
-            //               : device.name,
-            //         ),
-            //         subtitle: Text(device.id.toString()),
-            //         onTap: () => connectToDevice(device),
-            //       );
-            //     }).toList(),
-            //   ),
-            // ),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                itemCount: devices.length,
-                itemBuilder: (context, index) {
-                  final device = devices[index].device;
-
-                  return ListTile(
-                    title: Text(
-                      device.name.isEmpty
-                          ? "Unknown Device"
-                          : device.name,
-                    ),
-                    subtitle: Text(device.id.toString()),
-                    onTap: () => connectToDevice(device),
-                  );
-                },
-              ),
-            ),
-
-            TextField(
-              controller: ssidController,
-              decoration: InputDecoration(
-                labelText: "WiFi SSID",
-              ),
-            ),
-
-            TextField(
-              controller: passController,
-              decoration: InputDecoration(
-                labelText: "WiFi Password",
-              ),
-              obscureText: true,
-            ),
-
-            SizedBox(height: 10),
-
-            ElevatedButton(
-              onPressed: sendWiFi,
-              child: Text("Send to ESP32"),
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              connectedDevice == null
-                  ? "Not connected"
-                  : "Connected: ${connectedDevice!.name}",
-            ),
+            const SizedBox(height: 40),
+            _weatherTile(Icons.thermostat, "Temperature", "$temp°C", Colors.orange),
+            const SizedBox(height: 20),
+            _weatherTile(Icons.water_drop, "Humidity", "$humid%", Colors.blue),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _weatherTile(IconData icon, String label, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      width: 250,
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+      child: Row(
+        children: [
+          Icon(icon, size: 40, color: color),
+          const SizedBox(width: 20),
+          Column(crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: const TextStyle(color: Colors.grey)),
+              Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ],
+          )
+        ],
       ),
     );
   }
