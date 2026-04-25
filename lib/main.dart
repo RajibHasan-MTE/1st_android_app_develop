@@ -2,54 +2,93 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:convert';
 
-void main() => runApp(const MaterialApp(home: MultiRoomHub(), debugShowCheckedModeBanner: false));
+void main() => runApp(const MaterialApp(home: DeviceListScreen(), debugShowCheckedModeBanner: false));
 
-class MultiRoomHub extends StatefulWidget {
-  const MultiRoomHub({super.key});
+// --- SCREEN 1: LIST OF DEVICES ---
+class DeviceListScreen extends StatefulWidget {
+  const DeviceListScreen({super.key});
   @override
-  _MultiRoomHubState createState() => _MultiRoomHubState();
+  _DeviceListScreenState createState() => _DeviceListScreenState();
 }
 
-class _MultiRoomHubState extends State<MultiRoomHub> {
-  List<BluetoothDevice> foundRooms = [];
-  BluetoothDevice? activeDevice;
+class _DeviceListScreenState extends State<DeviceListScreen> {
+  List<ScanResult> devices = [];
+
+  void startScan() {
+    setState(() => devices.clear());
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    FlutterBluePlus.scanResults.listen((results) {
+      // Filter for ESP32 devices
+      setState(() => devices = results.where((r) => r.device.platformName.contains("ESP32")).toList());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Scan Building Devices")),
+      body: ListView.builder(
+        itemCount: devices.length,
+        itemBuilder: (c, i) => ListTile(
+          leading: const Icon(Icons.meeting_room),
+          title: Text(devices[i].device.platformName),
+          subtitle: Text(devices[i].device.remoteId.toString()),
+          onTap: () {
+            FlutterBluePlus.stopScan();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ControlPanel(device: devices[i].device)));
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: startScan, child: const Icon(Icons.search)),
+    );
+  }
+}
+
+// --- SCREEN 2: CONTROL PANEL ---
+class ControlPanel extends StatefulWidget {
+  final BluetoothDevice device;
+  const ControlPanel({super.key, required this.device});
+
+  @override
+  _ControlPanelState createState() => _ControlPanelState();
+}
+
+class _ControlPanelState extends State<ControlPanel> {
   BluetoothCharacteristic? ctrlChar;
-  String temp = "--", humid = "--";
+  double temp = 0.0, humid = 0.0;
+  bool lightStatus = false, fanStatus = false;
 
   final String sUUID = "4fafc201-0000-459e-8fcc-c5c9c331914b";
   final String dUUID = "4fafc201-0001-459e-8fcc-c5c9c331914b";
   final String cUUID = "4fafc201-0002-459e-8fcc-c5c9c331914b";
 
-  void scanForRooms() {
-    setState(() => foundRooms.clear());
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-    FlutterBluePlus.scanResults.listen((results) {
-      for (ScanResult r in results) {
-        // Filter for our specific room prefix
-        if (r.device.platformName.startsWith("ESP32_Room") && !foundRooms.contains(r.device)) {
-          setState(() => foundRooms.add(r.device));
-        }
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    connectAndDiscover();
   }
 
-  void connectToRoom(BluetoothDevice device) async {
-    await device.connect();
-    setState(() => activeDevice = device);
-
-    List<BluetoothService> services = await device.discoverServices();
+  void connectAndDiscover() async {
+    await widget.device.connect();
+    List<BluetoothService> services = await widget.device.discoverServices();
     for (var s in services) {
-      if (s.uuid.toString() == sUUID) {
+      if (s.uuid.toString().toLowerCase() == sUUID) {
         for (var c in s.characteristics) {
-          if (c.uuid.toString() == cUUID) ctrlChar = c;
-          if (c.uuid.toString() == dUUID) {
+          String charUuid = c.uuid.toString().toLowerCase();
+          if (charUuid == cUUID) ctrlChar = c;
+          if (charUuid == dUUID) {
             await c.setNotifyValue(true);
-            c.lastValueStream.listen((val) {
-              String raw = utf8.decode(val);
-              setState(() {
-                temp = raw.split(",")[0];
-                humid = raw.split(",")[1];
-              });
+            c.lastValueStream.listen((value) {
+              if (value.isNotEmpty) {
+                String raw = utf8.decode(value);
+                Map<String, dynamic> data = jsonDecode(raw);
+                setState(() {
+                  temp = (data['temp'] as num).toDouble();
+                  humid = (data['humid'] as num).toDouble();
+                  lightStatus = data['light'] == 1;
+                  fanStatus = data['fan'] == 1;
+                });
+              }
             });
           }
         }
@@ -57,57 +96,47 @@ class _MultiRoomHubState extends State<MultiRoomHub> {
     }
   }
 
-  void sendCmd(String cmd) async {
-    if (ctrlChar != null) await ctrlChar!.write(cmd.codeUnits);
+  void sendCmd(String key, int val) async {
+    if (ctrlChar != null) {
+      String cmd = jsonEncode({key: val});
+      await ctrlChar!.write(cmd.codeUnits);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Smart Hub - MultiRoom")),
-      body: activeDevice == null ? buildRoomList() : buildControlPanel(),
-      floatingActionButton: activeDevice == null ? FloatingActionButton(onPressed: scanForRooms, child: const Icon(Icons.search)) : null,
-    );
-  }
-
-  Widget buildRoomList() {
-    return ListView.builder(
-      itemCount: foundRooms.length,
-      itemBuilder: (c, i) => ListTile(
-        leading: const Icon(Icons.meeting_room),
-        title: Text(foundRooms[i].platformName),
-        onTap: () => connectToRoom(foundRooms[i]),
+      appBar: AppBar(title: Text(widget.device.platformName)),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              _weatherItem("Temp", "$temp°C", Icons.thermostat, Colors.orange),
+              _weatherItem("Humid", "$humid%", Icons.water_drop, Colors.blue),
+            ]),
+            const SizedBox(height: 40),
+            SwitchListTile(
+              title: const Text("Room Light"),
+              value: lightStatus,
+              onChanged: (v) => sendCmd("l", v ? 1 : 0),
+            ),
+            SwitchListTile(
+              title: const Text("Room Fan"),
+              value: fanStatus,
+              onChanged: (v) => sendCmd("f", v ? 1 : 0),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildControlPanel() {
-    return Column(
-      children: [
-        ListTile(
-          title: Text("Connected to ${activeDevice!.platformName}"),
-          trailing: TextButton(onPressed: () => setState(() => activeDevice = null), child: const Text("Exit Room")),
-        ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          _statCard("Temp", "$temp°C", Colors.orange),
-          _statCard("Humid", "$humid%", Colors.blue),
-        ]),
-        const SizedBox(height: 20),
-        _controlBtn("Light", "L_ON", "L_OFF", Icons.lightbulb),
-        _controlBtn("Fan", "F_ON", "F_OFF", Icons.wind_power),
-      ],
-    );
-  }
-
-  Widget _statCard(String label, String val, Color col) {
-    return Card(child: Container(padding: const EdgeInsets.all(20), child: Column(children: [Text(label), Text(val, style: TextStyle(fontSize: 24, color: col))])));
-  }
-
-  Widget _controlBtn(String label, String on, String off, IconData icon) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(label),
-      IconButton(icon: Icon(icon, color: Colors.green), onPressed: () => sendCmd(on)),
-      IconButton(icon: Icon(icon, color: Colors.red), onPressed: () => sendCmd(off)),
+  Widget _weatherItem(String label, String value, IconData icon, Color color) {
+    return Column(children: [
+      Icon(icon, color: color, size: 40),
+      Text(label, style: const TextStyle(color: Colors.grey)),
+      Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
     ]);
   }
 }

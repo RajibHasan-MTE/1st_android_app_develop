@@ -2,30 +2,60 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <ArduinoJson.h>
 #include "DHT.h"
 
-// --- CONFIGURE THIS FOR EACH ROOM ---
+// Update these for each room
 #define ROOM_NAME "ESP32_Room_1" 
-#define LED_PIN 2   // Light
-#define FAN_PIN 15  // Fan
+#define LED_PIN 2
+#define FAN_PIN 15
 #define DHTPIN 4
 #define DHTTYPE DHT11
 
 DHT dht(DHTPIN, DHTTYPE);
 
 #define SERVICE_UUID "4fafc201-0000-459e-8fcc-c5c9c331914b"
-#define DATA_UUID    "4fafc201-0001-459e-8fcc-c5c9c331914b" // Temp & Humid
-#define CTRL_UUID    "4fafc201-0002-459e-8fcc-c5c9c331914b" // Fan & Light
+#define DATA_UUID    "4fafc201-0001-459e-8fcc-c5c9c331914b" // For Temperature/Humidity
+#define CTRL_UUID    "4fafc201-0002-459e-8fcc-c5c9c331914b" // For Light/Fan
 
 BLECharacteristic *pDataChar;
+bool deviceConnected = false;
+
+void sendSensorData() {
+  if (deviceConnected) {
+    StaticJsonDocument<200> doc;
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+
+    doc["temp"] = isnan(t) ? 0.0 : t;
+    doc["humid"] = isnan(h) ? 0.0 : h;
+    doc["light"] = digitalRead(LED_PIN) == HIGH ? 1 : 0;
+    doc["fan"] = digitalRead(FAN_PIN) == HIGH ? 1 : 0;
+
+    char buffer[200];
+    serializeJson(doc, buffer);
+    pDataChar->setValue(buffer);
+    pDataChar->notify();
+  }
+}
 
 class ControlCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pChar) {
       String val = pChar->getValue();
-      if (val == "L_ON") digitalWrite(LED_PIN, HIGH);
-      else if (val == "L_OFF") digitalWrite(LED_PIN, LOW);
-      else if (val == "F_ON") digitalWrite(FAN_PIN, HIGH);
-      else if (val == "F_OFF") digitalWrite(FAN_PIN, LOW);
+      StaticJsonDocument<100> doc;
+      deserializeJson(doc, val);
+
+      if (doc.containsKey("l")) digitalWrite(LED_PIN, doc["l"] == 1 ? HIGH : LOW);
+      if (doc.containsKey("f")) digitalWrite(FAN_PIN, doc["f"] == 1 ? HIGH : LOW);
+      sendSensorData(); // Push update immediately
+    }
+};
+
+class ServerCallbacks: public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) { deviceConnected = true; }
+    void onDisconnect(BLEServer* pServer) { 
+      deviceConnected = false; 
+      pServer->getAdvertising()->start();
     }
 };
 
@@ -37,8 +67,9 @@ void setup() {
 
   BLEDevice::init(ROOM_NAME);
   BLEServer *pServer = BLEDevice::createServer();
-  BLEService *pService = pServer->createService(SERVICE_UUID);
+  pServer->setCallbacks(new ServerCallbacks());
 
+  BLEService *pService = pServer->createService(SERVICE_UUID);
   pDataChar = pService->createCharacteristic(DATA_UUID, BLECharacteristic::PROPERTY_NOTIFY);
   pDataChar->addDescriptor(new BLE2902());
 
@@ -50,13 +81,6 @@ void setup() {
 }
 
 void loop() {
-  float t = dht.readTemperature();
-  float h = dht.readHumidity();
-  if (!isnan(t)) {
-    // Send combined string "Temp,Humid"
-    String data = String(t) + "," + String(h);
-    pDataChar->setValue(data.c_str());
-    pDataChar->notify();
-  }
+  sendSensorData();
   delay(2000);
 }
