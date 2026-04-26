@@ -1,186 +1,265 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:async';
 
-void main() => runApp(const MaterialApp(home: HomePage(), debugShowCheckedModeBanner: false));
-
-// --- HOME PAGE (MAIN DASHBOARD) ---
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-  @override
-  _HomePageState createState() => _HomePageState();
+void main() {
+  runApp(const SmartLifeClone());
 }
 
-class _HomePageState extends State<HomePage> {
-  List<Map<String, String>> savedRooms = [];
-  BluetoothDevice? connectedDevice;
-  BluetoothCharacteristic? ctrlChar;
-  Map<String, dynamic> status = {"t": 0, "h": 0, "l": 0, "f": 0};
+// ================= APP =================
+class SmartLifeClone extends StatelessWidget {
+  const SmartLifeClone({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomeDashboard(),
+    );
+  }
+}
+
+// ================= HOME DASHBOARD =================
+class HomeDashboard extends StatefulWidget {
+  const HomeDashboard({super.key});
+
+  @override
+  State<HomeDashboard> createState() => _HomeDashboardState();
+}
+
+class _HomeDashboardState extends State<HomeDashboard> {
+  List<BluetoothDevice> rooms = [];
+  BluetoothDevice? currentDevice;
+  BluetoothCharacteristic? ctrlChar, dataChar, configChar;
+
+  String temp = "--";
+  String humid = "--";
+  String currentRoom = "No Room";
+
+  bool connecting = false;
+
+  StreamSubscription? scanSub;
+
+  final serviceUUID = "4fafc201-0000-459e-8fcc-c5c9c331914b";
 
   @override
   void initState() {
     super.initState();
-    loadSavedRooms();
+    startScan();
   }
 
-  Future<void> loadSavedRooms() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> raw = prefs.getStringList('rooms') ?? [];
-    setState(() {
-      savedRooms = raw.map((s) => Map<String, String>.from(jsonDecode(s))).toList();
+  @override
+  void dispose() {
+    scanSub?.cancel();
+    FlutterBluePlus.stopScan();
+    currentDevice?.disconnect();
+    super.dispose();
+  }
+
+  // ================= SCAN =================
+  void startScan() {
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 0));
+
+    scanSub = FlutterBluePlus.scanResults.listen((results) {
+      for (var r in results) {
+        if (r.device.platformName.isNotEmpty &&
+            !rooms.contains(r.device)) {
+          setState(() {
+            rooms.add(r.device);
+          });
+        }
+      }
     });
   }
 
-  void connect(String id) async {
-    try {
-      BluetoothDevice device = BluetoothDevice.fromId(id);
-      await device.connect();
-      setState(() => connectedDevice = device);
+  // ================= CONNECT =================
+  Future<void> connect(BluetoothDevice d) async {
+    if (connecting) return;
 
-      List<BluetoothService> services = await device.discoverServices();
+    connecting = true;
+
+    try {
+      await currentDevice?.disconnect();
+      await d.connect(timeout: const Duration(seconds: 5));
+
+      currentDevice = d;
+      currentRoom = d.platformName;
+
+      var services = await d.discoverServices();
+
       for (var s in services) {
-        if (s.uuid.toString().contains("0000")) { // Service
+        if (s.uuid.toString() == serviceUUID) {
           for (var c in s.characteristics) {
-            if (c.uuid.toString().contains("0002")) ctrlChar = c; // Control
-            if (c.uuid.toString().contains("0001")) { // Data
+            if (c.uuid.toString().contains("0002")) ctrlChar = c;
+
+            if (c.uuid.toString().contains("0001")) {
+              dataChar = c;
               await c.setNotifyValue(true);
+
               c.lastValueStream.listen((val) {
-                if (val.isNotEmpty && mounted) {
-                  setState(() => status = jsonDecode(utf8.decode(val)));
+                String raw = utf8.decode(val);
+                var parts = raw.split(",");
+
+                if (parts.length == 2) {
+                  setState(() {
+                    temp = parts[0];
+                    humid = parts[1];
+                  });
                 }
               });
+            }
+
+            if (c.uuid.toString().contains("0003")) {
+              configChar = c;
             }
           }
         }
       }
+
+      setState(() {});
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Could not connect!")));
+      debugPrint("Connect error: $e");
+    }
+
+    connecting = false;
+  }
+
+  // ================= COMMAND =================
+  void send(String cmd) async {
+    if (ctrlChar != null) {
+      await ctrlChar!.write(cmd.codeUnits);
     }
   }
 
-  void toggle(String key, int val) async {
-    if (ctrlChar != null) await ctrlChar!.write(jsonEncode({key: val}).codeUnits);
-  }
+  // ================= RENAME =================
+  void renameDialog() {
+    TextEditingController ctrl = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("My Smart Building"), actions: [
-        IconButton(icon: const Icon(Icons.add_box), onPressed: () =>
-            Navigator.push(context, MaterialPageRoute(builder: (c) => const AddRoomPage())).then((_) => loadSavedRooms()))
-      ]),
-      body: Column(children: [
-        if (connectedDevice != null) _buildLiveControl(),
-        const Padding(padding: EdgeInsets.all(10), child: Text("Your Configured Rooms", style: TextStyle(color: Colors.grey))),
-        Expanded(child: ListView.builder(
-          itemCount: savedRooms.length,
-          itemBuilder: (c, i) => ListTile(
-            leading: const Icon(Icons.home),
-            title: Text(savedRooms[i]['name']!),
-            subtitle: Text(savedRooms[i]['id']!),
-            onTap: () => connect(savedRooms[i]['id']!),
-          ),
-        ))
-      ]),
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Rename Room"),
+        content: TextField(controller: ctrl),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (configChar != null) {
+                await configChar!.write("NAME:${ctrl.text}".codeUnits);
+              }
+              Navigator.pop(context);
+            },
+            child: const Text("Save"),
+          )
+        ],
+      ),
     );
   }
 
-  Widget _buildLiveControl() {
-    return Card(
-      margin: const EdgeInsets.all(10),
-      color: Colors.blue[50],
-      child: Column(children: [
-        ListTile(title: Text("Controlling: ${connectedDevice!.platformName}"), trailing: const Icon(Icons.bluetooth_connected, color: Colors.blue)),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          Text("${status['t']}°C", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          Text("${status['h']}% Humid", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ]),
-        ButtonBar(alignment: MainAxisAlignment.center, children: [
-          ElevatedButton(onPressed: () => toggle("l", status['l'] == 1 ? 0 : 1), child: Text(status['l'] == 1 ? "Light OFF" : "Light ON")),
-          ElevatedButton(onPressed: () => toggle("f", status['f'] == 1 ? 0 : 1), child: Text(status['f'] == 1 ? "Fan OFF" : "Fan ON")),
-        ])
-      ]),
-    );
-  }
-}
-
-// --- SCAN & ADD PAGE ---
-class AddRoomPage extends StatefulWidget {
-  const AddRoomPage({super.key});
-  @override
-  _AddRoomPageState createState() => _AddRoomPageState();
-}
-
-class _AddRoomPageState extends State<AddRoomPage> {
-  List<ScanResult> results = [];
-  final TextEditingController _nameController = TextEditingController();
-  StreamSubscription? _scanSub;
-
-  @override
-  void dispose() {
-    _scanSub?.cancel();
-    FlutterBluePlus.stopScan();
-    super.dispose();
-  }
-
-  void startScan() async {
-    setState(() => results.clear());
-    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
-    _scanSub = FlutterBluePlus.scanResults.listen((res) {
-      if (mounted) {
-        setState(() => results = res.where((r) => r.device.platformName.toUpperCase().contains("ESP32")).toList());
-      }
-    });
-  }
-
-  void saveRoom(BluetoothDevice d) async {
-    if (_nameController.text.isEmpty) return;
-    final prefs = await SharedPreferences.getInstance();
-    List<String> raw = prefs.getStringList('rooms') ?? [];
-
-    // Save locally
-    raw.add(jsonEncode({'name': _nameController.text, 'id': d.remoteId.toString()}));
-    await prefs.setStringList('rooms', raw);
-
-    // Optional: Send name change command to ESP32
-    try {
-      await d.connect();
-      var services = await d.discoverServices();
-      for (var s in services) {
-        for (var c in s.characteristics) {
-          if (c.uuid.toString().contains("0002")) {
-            await c.write(jsonEncode({"name": _nameController.text}).codeUnits);
-          }
-        }
-      }
-    } catch (e) { /* silent fail */ }
-
-    if (mounted) Navigator.pop(context);
-  }
-
+  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("New Device Configuration")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Set Room Name (e.g. Living Room)")),
-          const SizedBox(height: 10),
-          ElevatedButton(onPressed: startScan, child: const Text("Scan for Nearby ESP32s")),
-          const Divider(),
-          Expanded(child: ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (c, i) => ListTile(
-              title: Text(results[i].device.platformName),
-              subtitle: Text(results[i].device.remoteId.toString()),
-              trailing: const Icon(Icons.add_circle_outline),
-              onTap: () => saveRoom(results[i].device),
+      appBar: AppBar(
+        title: const Text("Smart Home"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: startScan,
+          )
+        ],
+      ),
+      body: Column(
+        children: [
+          // CURRENT ROOM CARD
+          Card(
+            margin: const EdgeInsets.all(12),
+            child: ListTile(
+              leading: const Icon(Icons.home),
+              title: Text(currentRoom),
+              subtitle: Text(currentDevice == null
+                  ? "Disconnected"
+                  : "Connected"),
+              trailing: IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: renameDialog,
+              ),
             ),
-          ))
-        ]),
+          ),
+
+          // SENSOR PANEL
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              stat("Temp", "$temp °C"),
+              stat("Humid", "$humid %"),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // CONTROL PANEL
+          control("Light ON", () => send("L_ON")),
+          control("Light OFF", () => send("L_OFF")),
+          control("Fan ON", () => send("F_ON")),
+          control("Fan OFF", () => send("F_OFF")),
+
+          const Divider(),
+
+          const Text("Rooms"),
+
+          // ROOM GRID
+          Expanded(
+            child: GridView.builder(
+              itemCount: rooms.length,
+              gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
+              itemBuilder: (c, i) {
+                final d = rooms[i];
+
+                return GestureDetector(
+                  onTap: () => connect(d),
+                  child: Card(
+                    child: Center(
+                      child: Text(d.platformName.isEmpty
+                          ? "Room"
+                          : d.platformName),
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget stat(String t, String v) {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        width: 140,
+        child: Column(
+          children: [
+            Text(t),
+            const SizedBox(height: 10),
+            Text(v, style: const TextStyle(fontSize: 20)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget control(String t, VoidCallback onTap) {
+    return Card(
+      child: ListTile(
+        title: Text(t),
+        trailing: IconButton(
+          icon: const Icon(Icons.power),
+          onPressed: onTap,
+        ),
       ),
     );
   }

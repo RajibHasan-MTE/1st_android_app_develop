@@ -2,89 +2,128 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <ArduinoJson.h>
 #include <Preferences.h>
 #include "DHT.h"
 
+// ================= CONFIG =================
 #define LED_PIN 2
 #define FAN_PIN 15
 #define DHTPIN 4
 #define DHTTYPE DHT11
 
-DHT dht(DHTPIN, DHTTYPE);
-Preferences prefs;
-String roomName;
-
 #define SERVICE_UUID "4fafc201-0000-459e-8fcc-c5c9c331914b"
-#define DATA_UUID "4fafc201-0001-459e-8fcc-c5c9c331914b"
-#define CTRL_UUID "4fafc201-0002-459e-8fcc-c5c9c331914b"
+#define DATA_UUID    "4fafc201-0001-459e-8fcc-c5c9c331914b"
+#define CTRL_UUID    "4fafc201-0002-459e-8fcc-c5c9c331914b"
+#define CONFIG_UUID  "4fafc201-0003-459e-8fcc-c5c9c331914b"
 
-BLECharacteristic *pDataChar;
-bool deviceConnected = false;
+// ================= GLOBAL =================
+Preferences prefs;
+DHT dht(DHTPIN, DHTTYPE);
 
-class MyCallbacks : public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic *pChar) {
-    String val = pChar->getValue();
-    StaticJsonDocument<200> doc;
-    deserializeJson(doc, val);
+BLECharacteristic *dataChar;
+String deviceName;
 
-    if (doc.containsKey("name")) {
-      prefs.begin("settings", false);
-      prefs.putString("room", doc["name"].as<String>());
+// ================= CONTROL CALLBACK =================
+class ControlCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *c) {
+    String val = c->getValue();
+
+    if (val == "L_ON") digitalWrite(LED_PIN, HIGH);
+    else if (val == "L_OFF") digitalWrite(LED_PIN, LOW);
+    else if (val == "F_ON") digitalWrite(FAN_PIN, HIGH);
+    else if (val == "F_OFF") digitalWrite(FAN_PIN, LOW);
+  }
+};
+
+// ================= CONFIG CALLBACK (INSTALLER MODE) =================
+class ConfigCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *c) {
+    String val = c->getValue();
+
+    // ---------- RENAME DEVICE ----------
+    if (val.startsWith("NAME:")) {
+      String newName = val.substring(5);
+
+      prefs.begin("cfg", false);
+      prefs.putString("name", newName);
       prefs.end();
+
+      Serial.println("Device renamed to: " + newName);
+      delay(500);
       ESP.restart();
     }
-    if (doc.containsKey("l")) digitalWrite(LED_PIN, doc["l"] == 1 ? HIGH : LOW);
-    if (doc.containsKey("f")) digitalWrite(FAN_PIN, doc["f"] == 1 ? HIGH : LOW);
+
+    // ---------- FACTORY RESET ----------
+    if (val == "RESET") {
+      prefs.begin("cfg", false);
+      prefs.clear();
+      prefs.end();
+
+      Serial.println("Factory reset done");
+      delay(500);
+      ESP.restart();
+    }
   }
 };
 
-class ServerCallbacks : public BLEServerCallbacks {
-  void onConnect(BLEServer *pS) {
-    deviceConnected = true;
-  }
-  void onDisconnect(BLEServer *pS) {
-    deviceConnected = false;
-    pS->getAdvertising()->start();
-  }
-};
-
+// ================= SETUP =================
 void setup() {
   Serial.begin(115200);
+
   pinMode(LED_PIN, OUTPUT);
   pinMode(FAN_PIN, OUTPUT);
   dht.begin();
 
-  prefs.begin("settings", true);
-  roomName = prefs.getString("room", "New_ESP32_Device");
+  // ---------- LOAD SAVED NAME ----------
+  prefs.begin("cfg", true);
+  deviceName = prefs.getString("name", "NEW_DEVICE");
   prefs.end();
 
-  BLEDevice::init(roomName.c_str());
-  BLEServer *pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new ServerCallbacks());
+  Serial.println("Starting BLE as: " + deviceName);
 
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-  pDataChar = pService->createCharacteristic(DATA_UUID, BLECharacteristic::PROPERTY_NOTIFY);
-  pDataChar->addDescriptor(new BLE2902());
+  // ---------- INIT BLE ----------
+  BLEDevice::init(deviceName.c_str());
 
-  BLECharacteristic *pCtrl = pService->createCharacteristic(CTRL_UUID, BLECharacteristic::PROPERTY_WRITE);
-  pCtrl->setCallbacks(new MyCallbacks());
+  BLEServer *server = BLEDevice::createServer();
+  BLEService *service = server->createService(SERVICE_UUID);
 
-  pService->start();
-  pServer->getAdvertising()->start();
+  // ---------- SENSOR DATA ----------
+  dataChar = service->createCharacteristic(
+    DATA_UUID,
+    BLECharacteristic::PROPERTY_NOTIFY
+  );
+  dataChar->addDescriptor(new BLE2902());
+
+  // ---------- USER CONTROL ----------
+  BLECharacteristic *ctrlChar = service->createCharacteristic(
+    CTRL_UUID,
+    BLECharacteristic::PROPERTY_WRITE
+  );
+  ctrlChar->setCallbacks(new ControlCallbacks());
+
+  // ---------- INSTALLER CONFIG ----------
+  BLECharacteristic *cfgChar = service->createCharacteristic(
+    CONFIG_UUID,
+    BLECharacteristic::PROPERTY_WRITE
+  );
+  cfgChar->setCallbacks(new ConfigCallbacks());
+
+  service->start();
+  server->getAdvertising()->start();
+
+  Serial.println("BLE Ready");
 }
 
+// ================= LOOP =================
 void loop() {
-  if (deviceConnected) {
-    StaticJsonDocument<128> doc;
-    doc["t"] = dht.readTemperature();
-    doc["h"] = dht.readHumidity();
-    doc["l"] = digitalRead(LED_PIN);
-    doc["f"] = digitalRead(FAN_PIN);
-    char buf[128];
-    serializeJson(doc, buf);
-    pDataChar->setValue(buf);
-    pDataChar->notify();
+  float t = dht.readTemperature();
+  float h = dht.readHumidity();
+
+  if (!isnan(t) && !isnan(h)) {
+    String payload = String(t) + "," + String(h);
+    dataChar->setValue(payload.c_str());
+    dataChar->notify();
   }
+
   delay(2000);
 }
