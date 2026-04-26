@@ -70,5 +70,6 @@ void loop() {
     pHumidChar->setValue(String(h).c_str());
     pHumidChar->notify();
   }
+  Serial.println(h);
   delay(2000);
 }
