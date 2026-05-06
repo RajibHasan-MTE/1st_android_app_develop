@@ -1,121 +1,205 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rajib Hasan',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Counter app'),
+      debugShowCheckedModeBanner: false,
+      title: 'Input Widgets Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: InputWidgetsPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class InputWidgetsPage extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<InputWidgetsPage> createState() => _InputWidgetsPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _InputWidgetsPageState extends State<InputWidgetsPage> {
+  // TextField
+  TextEditingController nameController = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // Checkbox
+  bool isFlutter = false;
+  bool isDart = false;
+
+  // Switch
+  bool darkMode = false;
+
+  // RadioButton
+  String gender = "Male";
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("Input Widgets Playground"),
+        centerTitle: true,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('You have pushed the button this many times:'),
+            // ================= TEXTFIELD =================
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              "1. TextField (All Properties Demo)",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+
+            SizedBox(height: 10),
+
+            TextField(
+              controller: nameController,
+              keyboardType: TextInputType.text,
+              obscureText: false,
+              maxLength: 20,
+              maxLines: 1,
+              autofocus: false,
+              enabled: true,
+              cursorColor: Colors.blue,
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 16, color: Colors.black),
+
+              decoration: InputDecoration(
+                labelText: "Enter Name",
+                hintText: "Type your full name",
+                helperText: "This is helper text",
+                prefixIcon: Icon(Icons.person),
+                suffixIcon: Icon(Icons.check),
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              onChanged: (value) {
+                print("Typing: $value");
+              },
+
+              onSubmitted: (value) {
+                print("Submitted: $value");
+              },
+            ),
+
+            Divider(height: 40),
+
+            // ================= CHECKBOX =================
+            Text(
+              "2. Checkbox (Multi Selection)",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            CheckboxListTile(
+              title: Text("I like Flutter"),
+              value: isFlutter,
+              activeColor: Colors.green,
+              checkColor: Colors.white,
+              tristate: false,
+              onChanged: (value) {
+                setState(() {
+                  isFlutter = value!;
+                });
+              },
+            ),
+
+            CheckboxListTile(
+              title: Text("I like Dart"),
+              value: isDart,
+              activeColor: Colors.blue,
+              checkColor: Colors.white,
+              onChanged: (value) {
+                setState(() {
+                  isDart = value!;
+                });
+              },
+            ),
+
+            Divider(height: 40),
+
+            // ================= SWITCH =================
+            Text(
+              "3. Switch (ON/OFF Toggle)",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            SwitchListTile(
+              title: Text("Dark Mode"),
+              subtitle: Text("Enable or disable dark theme"),
+              value: darkMode,
+              activeColor: Colors.green,
+              activeTrackColor: Colors.greenAccent,
+              inactiveThumbColor: Colors.grey,
+              inactiveTrackColor: Colors.black26,
+
+              onChanged: (value) {
+                setState(() {
+                  darkMode = value;
+                });
+              },
+            ),
+
+            Divider(height: 40),
+
+            // ================= RADIO BUTTON =================
+            Text(
+              "4. RadioButton (Single Selection)",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            ListTile(
+              title: Text("Male"),
+              leading: Radio<String>(
+                value: "Male",
+                groupValue: gender,
+                activeColor: Colors.blue,
+                onChanged: (value) {
+                  setState(() {
+                    gender = value!;
+                  });
+                },
+              ),
+            ),
+
+            ListTile(
+              title: Text("Female"),
+              leading: Radio<String>(
+                value: "Female",
+                groupValue: gender,
+                activeColor: Colors.pink,
+                onChanged: (value) {
+                  setState(() {
+                    gender = value!;
+                  });
+                },
+              ),
+            ),
+
+            Divider(height: 40),
+
+            // ================= OUTPUT =================
+            Text(
+              "📊 Live Output",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 10),
+
+            Text("Name: ${nameController.text}"),
+            Text("Flutter: $isFlutter"),
+            Text("Dart: $isDart"),
+            Text("Dark Mode: $darkMode"),
+            Text("Gender: $gender"),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
