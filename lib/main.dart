@@ -1,206 +1,217 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(SettingsApp());
 }
 
-class MyApp extends StatelessWidget {
+class SettingsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Input Widgets Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: InputWidgetsPage(),
+      title: "Settings App",
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: SettingsPage(),
     );
   }
 }
 
-class InputWidgetsPage extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   @override
-  State<InputWidgetsPage> createState() => _InputWidgetsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _InputWidgetsPageState extends State<InputWidgetsPage> {
+class _SettingsPageState extends State<SettingsPage> {
   // TextField
   TextEditingController nameController = TextEditingController();
 
-  // Checkbox
-  bool isFlutter = false;
-  bool isDart = false;
-
-  // Switch
+  // Switches
+  bool notifications = true;
   bool darkMode = false;
 
-  // RadioButton
-  String gender = "Male";
+  // Radio
+  String language = "English";
+
+  // Checkbox
+  bool flutter = false;
+  bool dart = false;
+  bool ai = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Input Widgets Playground"),
+        title: Text("Settings"),
         centerTitle: true,
       ),
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ================= TEXTFIELD =================
-            Text(
-              "1. TextField (All Properties Demo)",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+      body: ListView(
+        children: [
 
-            SizedBox(height: 10),
+          // ================= PROFILE =================
+          sectionTitle("Profile"),
 
-            TextField(
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TextField(
               controller: nameController,
-              keyboardType: TextInputType.text,
-              obscureText: false,
-              maxLength: 20,
-              maxLines: 1,
-              autofocus: false,
-              enabled: true,
-              cursorColor: Colors.blue,
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 16, color: Colors.black),
-
               decoration: InputDecoration(
-                labelText: "Enter Name",
-                hintText: "Type your full name",
-                helperText: "This is helper text",
+                labelText: "Your Name",
                 prefixIcon: Icon(Icons.person),
-                suffixIcon: Icon(Icons.check),
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+
+          divider(),
+
+          // ================= GENERAL =================
+          sectionTitle("General"),
+
+          SwitchListTile(
+            title: Text("Notifications"),
+            subtitle: Text("Receive app notifications"),
+            value: notifications,
+            onChanged: (value) {
+              setState(() {
+                notifications = value;
+              });
+            },
+          ),
+
+          SwitchListTile(
+            title: Text("Dark Mode"),
+            subtitle: Text("Enable dark theme"),
+            value: darkMode,
+            onChanged: (value) {
+              setState(() {
+                darkMode = value;
+              });
+            },
+          ),
+
+          divider(),
+
+          // ================= LANGUAGE =================
+          sectionTitle("Language"),
+
+          RadioListTile(
+            title: Text("English"),
+            value: "English",
+            groupValue: language,
+            onChanged: (value) {
+              setState(() {
+                language = value.toString();
+              });
+            },
+          ),
+
+          RadioListTile(
+            title: Text("Bangla"),
+            value: "Bangla",
+            groupValue: language,
+            onChanged: (value) {
+              setState(() {
+                language = value.toString();
+              });
+            },
+          ),
+
+          RadioListTile(
+            title: Text("Arabic"),
+            value: "Arabic",
+            groupValue: language,
+            onChanged: (value) {
+              setState(() {
+                language = value.toString();
+              });
+            },
+          ),
+
+          divider(),
+
+          // ================= INTERESTS =================
+          sectionTitle("Interests"),
+
+          CheckboxListTile(
+            title: Text("Flutter"),
+            value: flutter,
+            onChanged: (value) {
+              setState(() {
+                flutter = value!;
+              });
+            },
+          ),
+
+          CheckboxListTile(
+            title: Text("Dart"),
+            value: dart,
+            onChanged: (value) {
+              setState(() {
+                dart = value!;
+              });
+            },
+          ),
+
+          CheckboxListTile(
+            title: Text("AI / Machine Learning"),
+            value: ai,
+            onChanged: (value) {
+              setState(() {
+                ai = value!;
+              });
+            },
+          ),
+
+          divider(),
+
+          // ================= SUMMARY =================
+          sectionTitle("Summary"),
+
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Card(
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Name: ${nameController.text}"),
+                    Text("Notifications: $notifications"),
+                    Text("Dark Mode: $darkMode"),
+                    Text("Language: $language"),
+                    Text("Flutter: $flutter"),
+                    Text("Dart: $dart"),
+                    Text("AI: $ai"),
+                  ],
                 ),
               ),
-
-              onChanged: (value) {
-                print("Typing: $value");
-              },
-
-              onSubmitted: (value) {
-                print("Submitted: $value");
-              },
             ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            Divider(height: 40),
+  // ================= UI HELPERS =================
 
-            // ================= CHECKBOX =================
-            Text(
-              "2. Checkbox (Multi Selection)",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            CheckboxListTile(
-              title: Text("I like Flutter"),
-              value: isFlutter,
-              activeColor: Colors.green,
-              checkColor: Colors.white,
-              tristate: false,
-              onChanged: (value) {
-                setState(() {
-                  isFlutter = value!;
-                });
-              },
-            ),
-
-            CheckboxListTile(
-              title: Text("I like Dart"),
-              value: isDart,
-              activeColor: Colors.blue,
-              checkColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  isDart = value!;
-                });
-              },
-            ),
-
-            Divider(height: 40),
-
-            // ================= SWITCH =================
-            Text(
-              "3. Switch (ON/OFF Toggle)",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            SwitchListTile(
-              title: Text("Dark Mode"),
-              subtitle: Text("Enable or disable dark theme"),
-              value: darkMode,
-              activeColor: Colors.green,
-              activeTrackColor: Colors.greenAccent,
-              inactiveThumbColor: Colors.grey,
-              inactiveTrackColor: Colors.black26,
-
-              onChanged: (value) {
-                setState(() {
-                  darkMode = value;
-                });
-              },
-            ),
-
-            Divider(height: 40),
-
-            // ================= RADIO BUTTON =================
-            Text(
-              "4. RadioButton (Single Selection)",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            ListTile(
-              title: Text("Male"),
-              leading: Radio<String>(
-                value: "Male",
-                groupValue: gender,
-                activeColor: Colors.blue,
-                onChanged: (value) {
-                  setState(() {
-                    gender = value!;
-                  });
-                },
-              ),
-            ),
-
-            ListTile(
-              title: Text("Female"),
-              leading: Radio<String>(
-                value: "Female",
-                groupValue: gender,
-                activeColor: Colors.pink,
-                onChanged: (value) {
-                  setState(() {
-                    gender = value!;
-                  });
-                },
-              ),
-            ),
-
-            Divider(height: 40),
-
-            // ================= OUTPUT =================
-            Text(
-              "📊 Live Output",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            SizedBox(height: 10),
-
-            Text("Name: ${nameController.text}"),
-            Text("Flutter: $isFlutter"),
-            Text("Dart: $isDart"),
-            Text("Dark Mode: $darkMode"),
-            Text("Gender: $gender"),
-          ],
+  Widget sectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue,
         ),
       ),
     );
+  }
+
+  Widget divider() {
+    return Divider(thickness: 1);
   }
 }
